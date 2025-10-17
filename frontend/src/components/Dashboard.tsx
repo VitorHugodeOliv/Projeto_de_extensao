@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 interface Props {
   token: string;
+  setToken: (token: string | null) => void;
 }
 
-const Dashboard: React.FC<Props> = ({ token }) => {
+const Dashboard: React.FC<Props> = ({ token, setToken }) => {
   const [mensagem, setMensagem] = useState("");
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -28,7 +32,8 @@ const Dashboard: React.FC<Props> = ({ token }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.reload();
+    setToken(null);
+    setTimeout(() => navigate("/login"), 50);
   };
 
   return (

@@ -10,11 +10,18 @@ const Login: React.FC<Props> = ({ setToken }) => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mensagem, setMensagem] = useState("");
+  
+  const navigate = useNavigate()
 
-  const handleLogin = async () => {
+  const handleNavigate = () => {
+    navigate("/dashboard")
+  }
+
+  const loginResponse = async () => {
     try {
       const res = await axios.post("http://localhost:5000/login", { email, senha });
       setMensagem(res.data.message);
+      
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
         setToken(res.data.token);
@@ -28,19 +35,22 @@ const Login: React.FC<Props> = ({ setToken }) => {
     }
   };
 
-  const navigate = useNavigate()
-
-  const handleNavigate = () => {
-    navigate("/registro")
+  const handleLogin = async () => {
+    await loginResponse()
+    handleNavigate()
   }
 
+  const handleRegister = () => {
+    navigate("/registro")
+  }
+  
   return (
     <div>
       <h2>Login</h2>
       <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
       <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
       <button onClick={handleLogin}>Entrar</button>
-      <text onClick={handleNavigate}>Ainda não tem uma conta? clique aqui.</text>
+      <text onClick={handleRegister}>Ainda não tem uma conta? clique aqui.</text>
       <p>{mensagem}</p>
     </div>
   );

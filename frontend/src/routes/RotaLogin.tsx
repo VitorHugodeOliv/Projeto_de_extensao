@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "../components/Login";
-import Dashboard from "../components/Dashboard";
+import { useNavigate } from "react-router";
 
 
 function RotaLogin () {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard")
+    }
+  })
 
   return (
     <div>
@@ -14,7 +22,6 @@ function RotaLogin () {
           <Login setToken={setToken} />
         </>
       )}
-      {token && <Dashboard token={token} />}
     </div>
   );
 };
