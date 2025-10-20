@@ -1,7 +1,9 @@
+import HomePage from "../components/HomePage";
+
 function RotaHomePage () {
     return (
         <div>
-            aqui é a homepage
+            <HomePage/>
         </div>
     )
 };

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from models.usuario_models import atualizar_usuario, buscar_usuario_por_id
 from controllers.controllers import cadastrar_usuario, login_usuario
 import jwt
 from config import settings
@@ -57,6 +58,44 @@ def dashboard():
             "user_id": decoded["id"],
             "tipo_usuario": decoded["tipo_usuario"]
         }), 200
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token expirado"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Token inválido"}), 401
+    
+
+@app.route("/perfil", methods=["GET", "PUT"])
+def perfil():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"message": "Token ausente"}), 401
+
+    token = auth_header.split(" ")[1]
+
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = decoded["id"]
+
+        if request.method == "GET":
+            usuario = buscar_usuario_por_id(user_id)
+            if not usuario:
+                return jsonify({"message": "Usuário não encontrado"}), 404
+            return jsonify(usuario), 200
+        
+        if request.method == "GET":
+            usuario = buscar_usuario_por_id(1)
+            if not usuario:
+                return jsonify({"message": "O usuário admin não pode ser alterado."}), 404
+            return jsonify(usuario), 200
+
+        elif request.method == "PUT":
+            data = request.get_json()
+            sucesso = atualizar_usuario(user_id, data)
+            if sucesso:
+                return jsonify({"message": "Perfil atualizado com sucesso!"}), 200
+            else:
+                return jsonify({"message": "Erro ao atualizar perfil"}), 400
+
     except jwt.ExpiredSignatureError:
         return jsonify({"message": "Token expirado"}), 401
     except jwt.InvalidTokenError:
