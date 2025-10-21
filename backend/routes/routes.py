@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from db import conectar
 from models.usuario_models import atualizar_usuario, buscar_usuario_por_id
 from controllers.controllers import cadastrar_usuario, login_usuario
 import jwt
@@ -100,6 +101,63 @@ def perfil():
         return jsonify({"message": "Token expirado"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"message": "Token inválido"}), 401
+    
+
+@app.route("/historias", methods=["POST"])
+def cadastrar_historia():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return jsonify({"message": "Token ausente"}), 401
+
+    token = auth_header.split(" ")[1]
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        proponente_id = decoded["id"]
+
+        data = request.get_json()
+        titulo = data.get("titulo")
+        autor_artista = data.get("autor_artista")
+        categoria_id = data.get("categoria_id")
+        status = data.get("status", "Em análise")
+        conteudo = data.get("conteudo")
+
+        if not titulo:
+            return jsonify({"message": "O campo 'título' é obrigatório."}), 400
+
+        # inserir no banco
+        conn = conectar()
+        cursor = conn.cursor()
+        sql = """
+            INSERT INTO Historias (titulo, proponente, autor_artista, categoria_id, status, conteudo)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(sql, (titulo, proponente_id, autor_artista, categoria_id, status, conteudo))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"message": "História enviada com sucesso!"}), 201
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token expirado"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Token inválido"}), 401
+    except Exception as e:
+        print("Erro ao cadastrar história:", e)
+        return jsonify({"message": "Erro ao cadastrar história."}), 500
+    
+@app.route("/categorias", methods=["GET"])
+def listar_categorias():
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor(dictionary=True)
+        cursor.execute("SELECT id, nome FROM Categorias")
+        categorias = cursor.fetchall()
+        cursor.close()
+        conexao.close()
+        return jsonify(categorias)
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

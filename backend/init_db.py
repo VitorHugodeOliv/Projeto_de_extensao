@@ -72,7 +72,6 @@ try:
     admin_nome = "admin"
     admin_senha = "admin123"
 
-    # Hash da senha
     senha_hash = bcrypt.hashpw(admin_senha.encode("utf-8"), bcrypt.gensalt())
 
     cursor.execute("SELECT id FROM Usuarios WHERE email = %s", (admin_email,))
@@ -100,7 +99,6 @@ try:
         else:
             print(f"Categoria '{nome}' já existe.")
 
-    # Commit das alterações
     conn.commit()
 
 except mysql.connector.Error as err:
