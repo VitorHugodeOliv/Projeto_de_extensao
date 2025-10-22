@@ -21,6 +21,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   const [status, setStatus] = useState("Em análise");
   const [conteudo, setConteudo] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [midias, setMidias] = useState<FileList | null>(null);
 
   const navigate = useNavigate();
 
@@ -54,7 +55,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
     }
 
     try {
-      const res = await axios.post(
+      const historiaRes = await axios.post(
         "http://localhost:5000/historias",
         {
           titulo,
@@ -66,7 +67,27 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setMensagem(res.data.message || "História enviada com sucesso!");
+      const historiaId = historiaRes.data.id;
+
+      if (midias && midias.length > 0) {
+        const formData = new FormData();
+
+        for (let i = 0; i < midias.length; i++) {
+          formData.append("arquivos", midias[i]);
+        }
+
+        formData.append("historia_id", historiaId);
+        
+        await axios.post("http://localhost:5000/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
+      
+      alert("História e mídias enviadas com sucesso!");
+      setMensagem("História e mídias enviadas com sucesso!");
       setTitulo("");
       setAutorArtista("");
       setCategoriaId(undefined);
@@ -124,6 +145,14 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
         <textarea
           value={conteudo}
           onChange={(e) => setConteudo(e.target.value)}
+        />
+
+        <label>Mídias (fotos, vídeos, áudios):</label>
+        <input
+          type="file"
+          multiple
+          accept="image/*,video/*,audio/*"
+          onChange={(e) => setMidias(e.target.files)}
         />
 
         <button onClick={handleSubmit}>Enviar História</button>

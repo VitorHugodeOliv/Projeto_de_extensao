@@ -5,11 +5,18 @@ from models.usuario_models import atualizar_usuario, buscar_usuario_por_id
 from controllers.controllers import cadastrar_usuario, login_usuario
 import jwt
 from config import settings
+from routes.upload_routes import upload_bp
 
 app = Flask(__name__)
 CORS(app)
 
 SECRET_KEY = settings.SECRET_KEY
+
+# TESTANDO BLUEPRINTS
+# SE FUNCIONAR
+# TROCAR TODAS AS ROTAS PARA ESSE PADRÃO
+
+app.register_blueprint(upload_bp)
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -124,7 +131,6 @@ def cadastrar_historia():
         if not titulo:
             return jsonify({"message": "O campo 'título' é obrigatório."}), 400
 
-        # inserir no banco
         conn = conectar()
         cursor = conn.cursor()
         sql = """
@@ -133,10 +139,16 @@ def cadastrar_historia():
         """
         cursor.execute(sql, (titulo, proponente_id, autor_artista, categoria_id, status, conteudo))
         conn.commit()
+
+        historia_id = cursor.lastrowid
+
         cursor.close()
         conn.close()
 
-        return jsonify({"message": "História enviada com sucesso!"}), 201
+        return jsonify({
+            "message": "História enviada com sucesso!",
+            "id": historia_id
+        }), 201
 
     except jwt.ExpiredSignatureError:
         return jsonify({"message": "Token expirado"}), 401
