@@ -31,7 +31,6 @@ def upload_arquivo():
     except jwt.InvalidTokenError:
         return jsonify({"message": "Token inválido"}), 401
 
-
     if "arquivos" not in request.files:
         return jsonify({"message": "Nenhum arquivo enviado"}), 400
 
@@ -39,12 +38,9 @@ def upload_arquivo():
     historia_id = request.form.get("historia_id")
 
     if not historia_id:
-        return jsonify({"message": "ID da história não encontrado"}), 400
-    
-    qtd_imagens = 0
-    qtd_videos = 0
-    qtd_audios = 0
+        return jsonify({"message": "É necessário informar o ID da história"}), 400
 
+    qtd_imagens, qtd_videos, qtd_audios = 0, 0, 0
     arquivos_enviados = []
 
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -52,36 +48,48 @@ def upload_arquivo():
     cursor = conn.cursor()
 
     for arquivo in arquivos:
-        if arquivo.filename == "":
+        if not allowed_file(arquivo.filename):
             continue
-        if allowed_file(arquivo.filename):
-            filename = secure_filename(arquivo.filename)
-            caminho = os.path.join(UPLOAD_FOLDER, filename)
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            arquivo.save(caminho)
 
-            tipo_arquivo = arquivo.filename.rsplit(".", 1)[1].lower()
+        filename = secure_filename(arquivo.filename)
+        caminho = os.path.join(UPLOAD_FOLDER, filename)
+        arquivo.save(caminho)
+        tamanho_mb = os.path.getsize(caminho) / (1024 * 1024)  # converte bytes → MB
+        tipo_ext = filename.rsplit(".", 1)[1].lower()
 
-            cursor.execute("""
-                INSERT INTO Arquivos (tipo, url_armazenamento, historia_id)
-                VALUES (%s, %s, %s)
-            """, (tipo_arquivo, caminho, historia_id))
-            arquivos_enviados.append(filename)
-        else:
-            print(f"Tipo de arquivo não permitido: {arquivo.filename}")
+        if tipo_ext in {"png", "jpg", "jpeg", "gif"}:
+            qtd_imagens += 1
+            if qtd_imagens > 5:
+                os.remove(caminho)
+                return jsonify({"message": "Máximo de 5 imagens permitido"}), 400
+
+        elif tipo_ext in {"mp4"}:
+            qtd_videos += 1
+            if qtd_videos > 1:
+                os.remove(caminho)
+                return jsonify({"message": "Apenas 1 vídeo é permitido"}), 400
+            if tamanho_mb > 50:  # limite aproximado de 5 min
+                os.remove(caminho)
+                return jsonify({"message": "O vídeo deve ter no máximo 5 minutos (≈50MB)"}), 400
+
+        elif tipo_ext in {"mp3", "wav"}:
+            qtd_audios += 1
+            if qtd_audios > 1:
+                os.remove(caminho)
+                return jsonify({"message": "Apenas 1 áudio é permitido"}), 400
+            if tamanho_mb > 20:  # limite aproximado de 21 min
+                os.remove(caminho)
+                return jsonify({"message": "O áudio deve ter no máximo 21 minutos (≈20MB)"}), 400
+
+        cursor.execute("""
+            INSERT INTO Arquivos (tipo, url_armazenamento, historia_id)
+            VALUES (%s, %s, %s)
+        """, (tipo_ext, caminho, historia_id))
+        arquivos_enviados.append(filename)
 
     conn.commit()
     cursor.close()
     conn.close()
-
-    print("=== [UPLOAD LOG] ===")
-    print(f"Usuário ID: {usuario_id}, Tipo: {tipo_usuario}")
-    print(f"História ID: {historia_id}")
-    print(f"Arquivos enviados: {arquivos_enviados}")
-    print("====================")
-
-    if not arquivos_enviados:
-        return jsonify({"message": "Nenhum arquivo válido enviado"}), 400
 
     return jsonify({
         "message": f"Arquivos enviados com sucesso: {arquivos_enviados}",

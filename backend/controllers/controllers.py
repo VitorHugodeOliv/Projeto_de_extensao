@@ -1,6 +1,6 @@
 import bcrypt
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from models.models import criar_usuario, buscar_usuario
 from config import settings
 
@@ -39,7 +39,7 @@ def cadastrar_usuario(
         "id": novo_usuario["id"],
         "nome": novo_usuario["nome"],
         "tipo_usuario": novo_usuario["tipo_usuario"],
-        "exp": datetime.utcnow() + timedelta(hours=2)
+        "exp": datetime.now(UTC) + timedelta(hours=2)
     }
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
     
@@ -55,7 +55,7 @@ def login_usuario(email: str, senha: str):
             "id": usuario['id'],
             "nome": usuario['nome'],
             "tipo_usuario": usuario.get('tipo_usuario', 'usuario'),
-            "exp": datetime.utcnow() + timedelta(hours=2)
+            "exp": datetime.now(UTC) + timedelta(hours=2)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         return True, "Login realizado com sucesso", token

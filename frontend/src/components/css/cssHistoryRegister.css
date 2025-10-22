@@ -48,3 +48,62 @@ button:hover {
   margin-top: 10px;
   font-weight: bold;
 }
+
+.preview-container {
+  margin-top: 15px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+.preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fafafa;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 150px;
+}
+
+.preview-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.preview-item video {
+  border-radius: 6px;
+}
+
+.preview-item audio {
+  width: 100%;
+}
+
+.preview-item p {
+  font-size: 12px;
+  margin: 6px 0;
+  text-align: center;
+  word-break: break-all;
+}
+
+.remove-btn {
+  border: none;
+  background: #e53935;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.remove-btn:hover {
+  background: #c62828;
+}
