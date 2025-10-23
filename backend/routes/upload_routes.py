@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify
-from werkzeug.utils import secure_filename
 import os
 import jwt
+from flask import Blueprint, request, jsonify
 from db import conectar
 from config import settings
+from werkzeug.utils import secure_filename
 
 SECRET_KEY = settings.SECRET_KEY
 UPLOAD_FOLDER = "uploads"
@@ -54,7 +54,7 @@ def upload_arquivo():
         filename = secure_filename(arquivo.filename)
         caminho = os.path.join(UPLOAD_FOLDER, filename)
         arquivo.save(caminho)
-        tamanho_mb = os.path.getsize(caminho) / (1024 * 1024)  # converte bytes → MB
+        tamanho_mb = os.path.getsize(caminho) / (1024 * 1024)
         tipo_ext = filename.rsplit(".", 1)[1].lower()
 
         if tipo_ext in {"png", "jpg", "jpeg", "gif"}:

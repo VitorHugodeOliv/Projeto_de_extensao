@@ -10,18 +10,30 @@ def test_registro_usuario(client):
         "senha": "senha123",
         "tipo_usuario": "comum"
     }
+
     response = client.post("/register", json=data)
     assert response.status_code in (200, 201)
-    msg = response.get_json().get("message", "").lower()
-    assert "sucesso" in msg or "usuário" in msg
 
+    json_data = response.get_json()
+    msg = json_data.get("message", "").lower()
+
+    assert "access_token" in json_data
+    assert "refresh_token" in json_data
+    assert "sucesso" in msg or "usuário" in msg
 
 def test_login_usuario(client):
     data = {"email": "teste@example.com", "senha": "senha123"}
+
     response = client.post("/login", json=data)
     assert response.status_code == 200
+
     json_data = response.get_json()
-    assert "token" in json_data
+    msg = json_data.get("message", "").lower()
+
+    assert "access_token" in json_data
+    assert "refresh_token" in json_data
+    assert "sucesso" in msg or "login" in msg
+
 
 def test_registro_usuario_duplicado(client):
     data = {

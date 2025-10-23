@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router";
+import api from "../apis/apiAxios"
 
 interface Usuario {
   nome: string;
@@ -33,7 +33,7 @@ const Perfil: React.FC<Props> = ({ token, setToken }) => {
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/perfil", {
+        const res = await api.get("http://localhost:5000/perfil", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUsuario(res.data);
@@ -47,7 +47,7 @@ const Perfil: React.FC<Props> = ({ token, setToken }) => {
 
   const handleSalvar = async () => {
     try {
-      const res = await axios.put(
+      const res = await api.put(
         "http://localhost:5000/perfil",
         usuario,
         { headers: { Authorization: `Bearer ${token}` } }

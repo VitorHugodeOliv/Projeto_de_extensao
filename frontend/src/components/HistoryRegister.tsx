@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import api from "../apis/apiAxios"
+import PreviewMidias from "../utils/PreviewMidias";
 import { useNavigate } from "react-router";
 import { validarArquivos } from "../utils/validarArquivos"
-import PreviewMidias from "../utils/PreviewMidias";
 import "./css/cssHistoryRegister.css";
 
 interface Props {
@@ -37,7 +38,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/categorias");
+        const res = await api.get("http://localhost:5000/categorias");
         setCategorias(res.data);
       } catch (err) {
         console.error("Erro ao buscar categorias:", err);
@@ -88,7 +89,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
     }
 
     try {
-      const historiaRes = await axios.post(
+      const historiaRes = await api.post(
         "http://localhost:5000/historias",
         {
           titulo,
@@ -111,7 +112,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
 
         formData.append("historia_id", historiaId);
         
-        await axios.post("http://localhost:5000/upload", formData, {
+        await api.post("http://localhost:5000/upload", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,

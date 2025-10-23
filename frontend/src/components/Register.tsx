@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../apis/apiAxios"
 
 interface Props {
   setToken: (token: string | null) => void;
@@ -34,7 +35,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/register", {
+      const res = await api.post("http://localhost:5000/register", {
         nome,
         email,
         senha,
@@ -46,9 +47,14 @@ const Register: React.FC<Props> = ({ setToken }) => {
 
       setMensagem(res.data.message);
 
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        setToken(res.data.token);
+       const accessToken = res.data.access_token;
+       const refreshToken = res.data.refresh_token;
+      
+
+      if (accessToken) {
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setToken(accessToken);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {

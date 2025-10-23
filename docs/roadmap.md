@@ -6,7 +6,7 @@
 | Tarefa | Status | Descrição |
 |--------|:------:|-----------|
 | 🔐 Criptografia e autenticação JWT revisada | ✅ | Confirmar uso do `bcrypt` e validade dos tokens. |
-| 🕒 Refresh Token | ⬜ | Implementar sistema de renovação automática do JWT. |
+| 🕒 Refresh Token | ✅ | Implementar sistema de renovação automática do JWT. |
 | 🧩 Middleware de erros globais | ⬜ | Criar interceptador de erros com mensagens padronizadas em JSON. |
 | 🛡️ Rate limiting | ⬜ | Adicionar `Flask-Limiter` nas rotas sensíveis. |
 | ✉️ Envio de e-mails | ⬜ | Implementar `Flask-Mail` para redefinição de senha e notificações. |

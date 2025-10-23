@@ -1,10 +1,6 @@
 import bcrypt
-import jwt
-from datetime import datetime, timedelta, UTC
+from datetime import datetime
 from models.models import criar_usuario, buscar_usuario
-from config import settings
-
-SECRET_KEY = settings.SECRET_KEY
 
 def cadastrar_usuario(
     nome: str, 
@@ -34,30 +30,15 @@ def cadastrar_usuario(
 
     if not novo_usuario:
         return False, "Erro ao criar usuário", None
+    return True, "Usuário cadastrado com sucesso", novo_usuario
 
-    payload = {
-        "id": novo_usuario["id"],
-        "nome": novo_usuario["nome"],
-        "tipo_usuario": novo_usuario["tipo_usuario"],
-        "exp": datetime.now(UTC) + timedelta(hours=2)
-    }
-    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-    
-    return True, "Usuário cadastrado com sucesso", token
 
 def login_usuario(email: str, senha: str):
     usuario = buscar_usuario(email)
     if not usuario:
         return False, "Usuário não encontrado", None
 
-    if bcrypt.checkpw(senha.encode("utf-8"), usuario['senha'].encode("utf-8")):
-        payload = {
-            "id": usuario['id'],
-            "nome": usuario['nome'],
-            "tipo_usuario": usuario.get('tipo_usuario', 'usuario'),
-            "exp": datetime.now(UTC) + timedelta(hours=2)
-        }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-        return True, "Login realizado com sucesso", token
+    if bcrypt.checkpw(senha.encode("utf-8"), usuario["senha"].encode("utf-8")):
+        return True, "Login realizado com sucesso", usuario
     else:
         return False, "Senha incorreta", None

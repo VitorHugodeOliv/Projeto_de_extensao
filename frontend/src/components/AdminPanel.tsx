@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../apis/apiAxios"
 import "./css/cssAdminPanel.css";
 
 interface Historia {
@@ -24,7 +24,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
 
   const carregarHistorias = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/admin/solicitacoes", {
+      const res = await api.get("http://localhost:5000/admin/solicitacoes", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setHistorias(res.data.historias || []);
@@ -41,7 +41,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
 
   const aprovarHistoria = async (id: number) => {
     try {
-      await axios.patch(
+      await api.patch(
         "http://localhost:5000/admin/solicitacoes",
         { historia_id: id },
         { headers: { Authorization: `Bearer ${token}` } }
@@ -56,7 +56,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
 
   const rejeitarHistoria = async (id: number) => {
     try {
-      await axios.delete("http://localhost:5000/admin/solicitacoes", {
+      await api.delete("http://localhost:5000/admin/solicitacoes", {
         headers: { Authorization: `Bearer ${token}` },
         data: { historia_id: id },
       });

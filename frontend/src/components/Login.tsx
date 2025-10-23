@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import api from "../apis/apiAxios"
 import { useNavigate } from "react-router";
 
 interface Props {
@@ -19,12 +20,16 @@ const Login: React.FC<Props> = ({ setToken }) => {
 
   const loginResponse = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/login", { email, senha });
+      const res = await api.post("http://localhost:5000/login", { email, senha });
       setMensagem(res.data.message);
+
+      const accessToken = res.data.access_token;
+      const refreshToken = res.data.refresh_token;
       
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        setToken(res.data.token);
+      if (accessToken) {
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setToken(accessToken);
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
