@@ -6,6 +6,7 @@ from controllers.controllers import cadastrar_usuario, login_usuario
 import jwt
 from config import settings
 from routes.upload_routes import upload_bp
+from routes.admin_bp import admin_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -17,6 +18,7 @@ SECRET_KEY = settings.SECRET_KEY
 # TROCAR TODAS AS ROTAS PARA ESSE PADRÃO
 
 app.register_blueprint(upload_bp)
+app.register_blueprint(admin_bp)
 
 @app.route("/register", methods=["POST"])
 def register():

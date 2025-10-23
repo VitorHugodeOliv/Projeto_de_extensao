@@ -1,5 +1,5 @@
 import React from "react";
-import "./css/cssHistoryRegister.css";
+import "../components/css/cssHistoryRegister.css";
 
 interface Props {
   midias: FileList | null;

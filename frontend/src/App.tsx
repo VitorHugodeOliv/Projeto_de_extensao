@@ -6,6 +6,7 @@ import RotaPerfil from "./routes/RotaPerfil";
 import RotaHomePage from "./routes/RotaHomePage";
 import RotaDashboard from "./routes/RotaDashboard";
 import RotaHistoryRegister from "./routes/RotaHistoryRegister";
+import RotaAdminPanel from "./routes/RotaAdminPanel";
 
 const App: React.FC = () => {
 
@@ -16,7 +17,8 @@ const App: React.FC = () => {
       <Route path="/registro" element={<RotaRegistro/>}/>
       <Route path="/dashboard" element={ <RotaDashboard/>}/>
       <Route path="/perfil" element={ <RotaPerfil/>}/>
-      <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>            
+      <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>
+      <Route path="/admin" element={ <RotaAdminPanel/>}/>     
     </Routes>
   );
 };

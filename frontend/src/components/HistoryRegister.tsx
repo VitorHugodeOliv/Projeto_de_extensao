@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { validarArquivos } from "../utils/validarArquivos"
-import PreviewMidias from "./PreviewMidias";
+import PreviewMidias from "../utils/PreviewMidias";
 import "./css/cssHistoryRegister.css";
 
 interface Props {

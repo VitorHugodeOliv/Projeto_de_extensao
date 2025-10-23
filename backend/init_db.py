@@ -13,7 +13,6 @@ try:
     conn = mysql.connector.connect(host=db_config["host"], user=db_config["user"], password=db_config["password"])
     cursor = conn.cursor()
     
-    # Criar banco de dados se não existir
     cursor.execute("CREATE DATABASE IF NOT EXISTS sistema_login")
     print("Banco de dados 'sistema_login' verificado/criado.")
     
@@ -65,26 +64,38 @@ try:
             FOREIGN KEY (historia_id) REFERENCES Historias(id)
         )
     """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS LogsAdmin (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            admin_id INT NOT NULL,
+            historia_id INT NULL,
+            acao ENUM('Aprovou', 'Rejeitou') NOT NULL,
+            data_acao DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (admin_id) REFERENCES Usuarios(id),
+            FOREIGN KEY (historia_id) REFERENCES Historias(id) ON DELETE SET NULL
+        )
+    """)
     print("Tabelas verificadas/criadas.")
 
     # ----------------- Admin padrão -----------------
-    admin_email = "admin@sistema.com"
-    admin_nome = "admin"
-    admin_senha = "admin123"
+    admins_padrao = [
+        ("admin", "admin@sistema.com", "admin123"),
+        ("admin2", "admin2@sistema.com", "admin456"),
+    ]
 
-    senha_hash = bcrypt.hashpw(admin_senha.encode("utf-8"), bcrypt.gensalt())
+    for nome, email, senha in admins_padrao:
+        senha_hash = bcrypt.hashpw(senha.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        cursor.execute("SELECT id FROM Usuarios WHERE email = %s", (email,))
+        if cursor.fetchone() is None:
+            cursor.execute(
+                "INSERT INTO Usuarios (nome, email, senha, tipo_usuario) VALUES (%s, %s, %s, %s)",
+                (nome, email, senha_hash, "admin")
+            )
+            print(f"Usuário admin '{nome}' criado ({email}).")
+        else:
+            print(f"Usuário admin '{email}' já existe.")
 
-    cursor.execute("SELECT id FROM Usuarios WHERE email = %s", (admin_email,))
-    if cursor.fetchone() is None:
-        cursor.execute(
-            "INSERT INTO Usuarios (nome, email, senha, tipo_usuario) VALUES (%s, %s, %s, %s)",
-            (admin_nome, admin_email, senha_hash.decode('utf-8'), "admin")
-        )
-        print("Usuário admin criado.")
-    else:
-        print("Usuário admin já existe.")
-
-    # ----------------- Categorias iniciais -----------------
     categorias_iniciais = [
         ("Teatro", "Histórias relacionadas a teatro e performances."),
         ("Dança", "Histórias e artistas de dança."),
