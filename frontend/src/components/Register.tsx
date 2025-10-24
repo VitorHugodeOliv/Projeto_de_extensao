@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import api from "../apis/apiAxios"
+import "./css/cssRegister.css"
 
 interface Props {
   setToken: (token: string | null) => void;
@@ -66,7 +67,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "auto" }}>
+    <div className="register-container">
       <h2>Cadastro</h2>
 
       <input

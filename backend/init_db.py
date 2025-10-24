@@ -1,6 +1,7 @@
 import mysql.connector
 from db import db_config
 import bcrypt
+from seed_historias import inserir_historias_iniciais
 
 db_config = {
     "host": "localhost",
@@ -109,6 +110,8 @@ try:
             print(f"Categoria '{nome}' criada.")
         else:
             print(f"Categoria '{nome}' já existe.")
+    
+    inserir_historias_iniciais()
 
     conn.commit()
 

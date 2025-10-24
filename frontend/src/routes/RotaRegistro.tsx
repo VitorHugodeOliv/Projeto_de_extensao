@@ -17,7 +17,6 @@ function RotaRegistro () {
     <div>
       {!token && (
         <>
-          <h1>Bem-vindo ao Sistema Cultural</h1>
           <Register setToken={setToken} />
         </>
       )}
