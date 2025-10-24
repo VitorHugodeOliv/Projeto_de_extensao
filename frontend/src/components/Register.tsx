@@ -16,6 +16,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
   const [apelido, setApelido] = useState("");
   const [areaArtistica, setAreaArtistica] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [isErro, setIsErro] = useState(false);
 
   const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,9 +48,10 @@ const Register: React.FC<Props> = ({ setToken }) => {
       });
 
       setMensagem(res.data.message);
+      setIsErro(false);
 
-       const accessToken = res.data.access_token;
-       const refreshToken = res.data.refresh_token;
+      const accessToken = res.data.access_token;
+      const refreshToken = res.data.refresh_token;
       
 
       if (accessToken) {
@@ -63,6 +65,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
       } else {
         setMensagem("Erro desconhecido");
       }
+      setIsErro(true);
     }
   };
 
@@ -115,7 +118,14 @@ const Register: React.FC<Props> = ({ setToken }) => {
       />
 
       <button onClick={handleRegister}>Cadastrar</button>
-      <p>{mensagem}</p>
+      {mensagem && (
+        <p
+          className={`show ${isErro ? "erro" : "sucesso"}`}
+        >
+          {isErro ? "✔️ " : "⚠️ "}
+          {mensagem}
+        </p>
+      )}
     </div>
   );
 };

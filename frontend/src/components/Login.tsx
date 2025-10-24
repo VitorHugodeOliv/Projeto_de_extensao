@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import api from "../apis/apiAxios"
 import { useNavigate } from "react-router";
+import "./css/cssLogin.css"
 
 interface Props {
   setToken: (token: string | null) => void;
@@ -49,14 +50,29 @@ const Login: React.FC<Props> = ({ setToken }) => {
     navigate("/registro")
   }
   
-  return (
-    <div>
-      <h2>Login</h2>
-      <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Senha" value={senha} onChange={e => setSenha(e.target.value)} />
+ return (
+    <div className="login-container">
+      <h1>Bem-vindo ao Sistema Cultural</h1>
+      <input 
+        type="email" 
+        placeholder="Email" 
+        value={email} 
+        onChange={e => setEmail(e.target.value)} 
+      />
+      <input 
+        type="password" 
+        placeholder="Senha" 
+        value={senha} 
+        onChange={e => setSenha(e.target.value)} 
+      />
+
       <button onClick={handleLogin}>Entrar</button>
-      <text onClick={handleRegister}>Ainda não tem uma conta? clique aqui.</text>
-      <p>{mensagem}</p>
+
+      <p className="register-link" onClick={handleRegister}>
+        Ainda não tem uma conta? <span>clique aqui</span>.
+      </p>
+
+      {mensagem && <p className="mensagem">{mensagem}</p>}
     </div>
   );
 };
