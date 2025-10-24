@@ -1,17 +1,27 @@
 import React from "react";
+import { imagens } from "../utils/arrayDeImagens"
 import "./css/cssHomePage.css";
 
 const HomePage: React.FC = () => {
+
+  const COLUNAS = 8;
+  const imagensPorColuna = 8;
+
   return (
     <div className="homepage">
+      <div className="image-background">
+        {Array.from({ length: COLUNAS }).map((_, colIndex) => (
+          <div key={colIndex} className="column">
+        {imagens.slice(colIndex * imagensPorColuna, colIndex * imagensPorColuna + imagensPorColuna)
+        .map((img, i) => <img key={i} src={img} alt="" />)}
+      </div>
+      ))}
+      </div>
       <header className="header">
         <h1>Sistema Cultural</h1>
-        <nav>
-          <a href="/login">Login</a>
-        </nav>
       </header>
 
-      <main className="hero">
+      <main className="hero-container">
         <h2>Bem-vindo ao Arquivo Digital de Memória Cultural</h2>
         <p>
           Explore, compartilhe e preserve as histórias culturais de Baraúna e do Nordeste.

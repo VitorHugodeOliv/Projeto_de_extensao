@@ -1,84 +1,218 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body, html, .homepage {
+body, html {
   height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: #002d1c; /* cor base escura */
+  color: #fff;
 }
 
-/* Cabeçalho */
-.header {
+.homepage {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  background-color: #222;
-  color: #fff;
-  padding: 1rem 2rem;
-}
-
-.header h1 {
-  font-size: 1.5rem;
-}
-
-.header nav a {
-  color: #fff;
-  text-decoration: none;
-  margin-left: 1.5rem;
-  transition: color 0.2s;
-}
-
-.header nav a:hover {
-  color: #ffb347;
-}
-
-/* Hero (conteúdo central) */
-.hero {
   text-align: center;
-  margin-top: 10vh;
-  padding: 2rem;
+  padding: clamp(1rem, 5vw, 3rem);
+  overflow: hidden;
+  background-color: #002d1c;
 }
 
-.hero h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #222;
-}
-
-.hero p {
-  font-size: 1.1rem;
+.hero-container {
+  background: rgba(0, 128, 0, 0.25);
+  border: 2px solid rgba(0, 255, 128, 0.3);
+  border-radius: 20px;
+  padding: 3rem 2rem;
   max-width: 600px;
-  margin: 0 auto 2rem;
-  line-height: 1.5;
-  color: #555;
+  width: 100%;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 25px rgba(0, 255, 128, 0.15);
+  transition: all 0.3s ease;
+}
+
+.hero-container:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 35px rgba(0, 255, 128, 0.25);
+}
+
+.hero-container h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #baff3b;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 255, 128, 0.5);
+}
+
+.hero-container p {
+  font-size: 1.1rem;
+  color: #e8ffe0;
+  margin-bottom: 2rem;
+  line-height: 1.6;
 }
 
 .cta-button {
   display: inline-block;
-  background-color: #ffb347;
-  color: #222;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
+  background: linear-gradient(90deg, #baff3b, #00a86b);
+  color: #002d1c;
+  padding: 0.9rem 2rem;
+  border-radius: 25px;
   font-weight: bold;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: 0.3s;
+  border: none;
 }
 
 .cta-button:hover {
-  background-color: #ff9800;
+  background: linear-gradient(90deg, #00ff88, #00b36e);
+  transform: scale(1.05);
 }
 
-/* Rodapé */
 .footer {
   text-align: center;
-  margin-top: 10vh;
-  padding: 1rem;
-  background-color: #222;
-  color: #ccc;
+  margin-top: 2rem;
+  color: #b0ffc2;
   font-size: 0.9rem;
 }
+
+/* =======================
+   RESPONSIVIDADE
+======================= */
+@media (max-width: 768px) {
+  .hero-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .hero-container h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-container p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-container {
+    padding: 1.5rem;
+  }
+
+  .hero-container h1 {
+    font-size: 1.4rem;
+  }
+
+  .cta-button {
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* =======================
+   MOSAICO DE FUNDO COM FADE
+======================= */
+
+.image-background {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-evenly; /* distribui as colunas igualmente */
+  align-items: center;
+  overflow: hidden;
+  z-index: 0;
+  opacity: 0.79; /* transparência geral */
+}
+
+/* Cada coluna com animação independente */
+.image-background .column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: scroll-column 35s linear infinite;
+  animation-timing-function: ease-in-out;
+  height: 250%;
+}
+
+/* Diferentes velocidades para dar efeito de profundidade */
+.image-background .column:nth-child(2) { animation-duration: 18s; }
+.image-background .column:nth-child(3) { animation-duration: 22s; }
+.image-background .column:nth-child(4) { animation-duration: 46s; }
+.image-background .column:nth-child(5) { animation-duration: 30s; }
+.image-background .column:nth-child(6) { animation-duration: 19s; }
+.image-background .column:nth-child(7) { animation-duration: 50s; }
+.image-background .column:nth-child(8) { animation-duration: 30s; }
+
+/* Estilo das imagens */
+.image-background img {
+  width: clamp(400px, 12vw, 280px);
+  height: clamp(230px, 15vw, 180px);
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  transition: transform 1s ease, opacity 2s ease;
+  opacity: 0.89;
+  animation: fadeInOut 6s ease-in-out infinite alternate;
+  filter: brightness(0.9) saturate(1.1) hue-rotate(-8deg);
+}
+
+/* Efeito ao passar o mouse */
+.image-background img:hover {
+  transform: scale(1.05);
+  z-index: 3;
+}
+
+/* Animação vertical */
+@keyframes scroll-column {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+
+/* Fade suave */
+@keyframes fadeInOut {
+  0% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.5; }
+}
+
+/* Overlay verde translúcido */
+.homepage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(0, 77, 50, 0.8),
+    rgba(0, 77, 50, 0.8)
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Garante que o conteúdo apareça acima do fundo */
+.hero-container,
+.footer {
+  position: relative;
+  z-index: 2;
+}
+
+/* Ajustes de responsividade */
+@media (max-width: 1024px) {
+  .image-background img {
+    width: clamp(120px, 12vw, 180px);
+    height: clamp(90px, 7vw, 120px);
+  }
+}
+
+@media (max-width: 768px) {
+  .image-background {
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap; /* quebra pra baixo se faltar espaço */
+  }
+}
+
