@@ -122,36 +122,34 @@ body, html {
   position: absolute;
   inset: 0;
   display: flex;
-  justify-content: space-evenly; /* distribui as colunas igualmente */
+  gap: 300px;
+  justify-content: space-evenly; 
   align-items: center;
   overflow: hidden;
   z-index: 0;
-  opacity: 0.79; /* transparência geral */
+  opacity: 0.79;
 }
 
-/* Cada coluna com animação independente */
 .image-background .column {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 200px;
   animation: scroll-column 35s linear infinite;
   animation-timing-function: ease-in-out;
-  height: 250%;
+  height: 300%;
 }
 
-/* Diferentes velocidades para dar efeito de profundidade */
-.image-background .column:nth-child(2) { animation-duration: 18s; }
+.image-background .column:nth-child(2) { animation-duration: 20s; }
 .image-background .column:nth-child(3) { animation-duration: 22s; }
-.image-background .column:nth-child(4) { animation-duration: 46s; }
+.image-background .column:nth-child(4) { animation-duration: 36s; }
 .image-background .column:nth-child(5) { animation-duration: 30s; }
 .image-background .column:nth-child(6) { animation-duration: 19s; }
-.image-background .column:nth-child(7) { animation-duration: 50s; }
-.image-background .column:nth-child(8) { animation-duration: 30s; }
+.image-background .column:nth-child(7) { animation-duration: 20s; }
+.image-background .column:nth-child(8) { animation-duration: 190s; }
 
-/* Estilo das imagens */
 .image-background img {
-  width: clamp(400px, 12vw, 280px);
-  height: clamp(230px, 15vw, 180px);
+  width: clamp(400px, 12vw, 380px);
+  height: clamp(330px, 15vw, 380px);
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
@@ -161,13 +159,11 @@ body, html {
   filter: brightness(0.9) saturate(1.1) hue-rotate(-8deg);
 }
 
-/* Efeito ao passar o mouse */
 .image-background img:hover {
   transform: scale(1.05);
   z-index: 3;
 }
 
-/* Animação vertical */
 @keyframes scroll-column {
   0% { transform: translateY(100%); }
   100% { transform: translateY(-100%); }
@@ -180,7 +176,6 @@ body, html {
   100% { opacity: 0.5; }
 }
 
-/* Overlay verde translúcido */
 .homepage::before {
   content: "";
   position: absolute;
@@ -193,14 +188,12 @@ body, html {
   pointer-events: none;
 }
 
-/* Garante que o conteúdo apareça acima do fundo */
 .hero-container,
 .footer {
   position: relative;
   z-index: 2;
 }
 
-/* Ajustes de responsividade */
 @media (max-width: 1024px) {
   .image-background img {
     width: clamp(120px, 12vw, 180px);
@@ -212,7 +205,7 @@ body, html {
   .image-background {
     justify-content: center;
     gap: 0.8rem;
-    flex-wrap: wrap; /* quebra pra baixo se faltar espaço */
+    flex-wrap: wrap;
   }
 }
 

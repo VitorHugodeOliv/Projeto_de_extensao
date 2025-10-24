@@ -1,5 +1,6 @@
+import os
 import jwt
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from utils.token_utils import validar_token
 from db import conectar
@@ -8,11 +9,14 @@ from config import settings
 from routes.upload_routes import upload_bp
 from routes.admin_bp import admin_bp
 from routes.auth_bp import auth_bp
+from routes.historias_bp import historias_bp
 
 app = Flask(__name__)
 CORS(app)
 
 SECRET_KEY = settings.SECRET_KEY
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 
 # TESTANDO BLUEPRINTS
 # SE FUNCIONAR
@@ -21,6 +25,7 @@ SECRET_KEY = settings.SECRET_KEY
 app.register_blueprint(upload_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
+app.register_blueprint(historias_bp)
 
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
@@ -72,53 +77,9 @@ def perfil():
         return jsonify({"message": "Token inválido"}), 401
     
 
-@app.route("/historias", methods=["POST"])
-def cadastrar_historia():
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        return jsonify({"message": "Token ausente"}), 401
-
-    token = auth_header.split(" ")[1]
-    try:
-        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        proponente_id = decoded["id"]
-
-        data = request.get_json()
-        titulo = data.get("titulo")
-        autor_artista = data.get("autor_artista")
-        categoria_id = data.get("categoria_id")
-        status = data.get("status", "Em análise")
-        conteudo = data.get("conteudo")
-
-        if not titulo:
-            return jsonify({"message": "O campo 'título' é obrigatório."}), 400
-
-        conn = conectar()
-        cursor = conn.cursor()
-        sql = """
-            INSERT INTO Historias (titulo, proponente, autor_artista, categoria_id, status, conteudo)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """
-        cursor.execute(sql, (titulo, proponente_id, autor_artista, categoria_id, status, conteudo))
-        conn.commit()
-
-        historia_id = cursor.lastrowid
-
-        cursor.close()
-        conn.close()
-
-        return jsonify({
-            "message": "História enviada com sucesso!",
-            "id": historia_id
-        }), 201
-
-    except jwt.ExpiredSignatureError:
-        return jsonify({"message": "Token expirado"}), 401
-    except jwt.InvalidTokenError:
-        return jsonify({"message": "Token inválido"}), 401
-    except Exception as e:
-        print("Erro ao cadastrar história:", e)
-        return jsonify({"message": "Erro ao cadastrar história."}), 500
+@app.route("/uploads/<path:filename>")
+def servir_arquivos(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
     
 @app.route("/categorias", methods=["GET"])
 def listar_categorias():

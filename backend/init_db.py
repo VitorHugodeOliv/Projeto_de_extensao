@@ -16,7 +16,6 @@ try:
     cursor.execute("CREATE DATABASE IF NOT EXISTS sistema_login")
     print("Banco de dados 'sistema_login' verificado/criado.")
     
-    # Conectar ao banco criado
     conn.database = "sistema_login"
 
     # ----------------- Tabelas -----------------
@@ -45,6 +44,7 @@ try:
         CREATE TABLE IF NOT EXISTS Historias (
             id INT AUTO_INCREMENT PRIMARY KEY,
             titulo VARCHAR(255) NOT NULL,
+            subtitulo VARCHAR(255),
             proponente INT NOT NULL,
             autor_artista VARCHAR(255),
             data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

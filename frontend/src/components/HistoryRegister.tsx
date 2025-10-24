@@ -18,6 +18,7 @@ interface Categoria {
 
 const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   const [titulo, setTitulo] = useState("");
+  const [subtitulo, setSubtitulo] = useState("")
   const [autorArtista, setAutorArtista] = useState("");
   const [categoriaId, setCategoriaId] = useState<number | undefined>();
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -93,6 +94,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
         "http://localhost:5000/historias",
         {
           titulo,
+          subtitulo,
           autor_artista: autorArtista || null,
           categoria_id: categoriaId,
           status,
@@ -123,6 +125,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
       setSucesso(true);
       setMensagem("História e mídias enviadas com sucesso!");
       setTitulo("");
+      setSubtitulo("");
       setAutorArtista("");
       setCategoriaId(undefined);
       setConteudo("");
@@ -167,6 +170,13 @@ return (
         onChange={(e) => setTitulo(e.target.value)}
         required
       />
+
+      <label>Subtítulo:</label>
+        <input
+          type="text"
+          value={subtitulo}
+          onChange={(e) => setSubtitulo(e.target.value)}
+        />
 
       <label>Autor/Artista:</label>
       <input

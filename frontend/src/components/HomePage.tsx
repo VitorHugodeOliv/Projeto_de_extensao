@@ -4,7 +4,7 @@ import "./css/cssHomePage.css";
 
 const HomePage: React.FC = () => {
 
-  const COLUNAS = 8;
+  const COLUNAS = 5;
   const imagensPorColuna = 8;
 
   return (
@@ -17,16 +17,12 @@ const HomePage: React.FC = () => {
       </div>
       ))}
       </div>
-      <header className="header">
-        <h1>Sistema Cultural</h1>
-      </header>
-
       <main className="hero-container">
         <h2>Bem-vindo ao Arquivo Digital de Memória Cultural</h2>
         <p>
           Explore, compartilhe e preserve as histórias culturais de Baraúna e do Nordeste.
         </p>
-        <a className="cta-button" href="/registro">
+        <a className="cta-button" href="/login">
           Comece agora
         </a>
       </main>

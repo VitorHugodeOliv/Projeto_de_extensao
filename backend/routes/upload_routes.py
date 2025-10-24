@@ -80,6 +80,8 @@ def upload_arquivo():
             if tamanho_mb > 20:  # limite aproximado de 21 min
                 os.remove(caminho)
                 return jsonify({"message": "O áudio deve ter no máximo 21 minutos (≈20MB)"}), 400
+            
+        caminho = caminho.replace("\\", "/")
 
         cursor.execute("""
             INSERT INTO Arquivos (tipo, url_armazenamento, historia_id)
@@ -96,7 +98,6 @@ def upload_arquivo():
         "user_id": usuario_id,
         "tipo_usuario": tipo_usuario
     }), 201
-
 
 @upload_bp.route("/upload/teste", methods=["POST"])
 def teste_upload():

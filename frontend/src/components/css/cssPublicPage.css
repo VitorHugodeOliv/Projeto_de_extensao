@@ -1,0 +1,67 @@
+.public-page {
+  padding: 2rem;
+  background-color: #f4f4f4;
+  color: #333;
+  min-height: 100vh;
+}
+
+.public-page h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.historias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.historia-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  color: #333;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.historia-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.historia-imagem {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.historia-conteudo {
+  padding: 1rem;
+}
+
+.historia-conteudo h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.historia-conteudo .subtitulo {
+  color: #666;
+  margin-bottom: 0.8rem;
+}
+
+.historia-conteudo small {
+  color: #999;
+}
+
+.mensagem-status {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+  color: #555;
+}
+
+.mensagem-status.erro {
+  color: red;
+}

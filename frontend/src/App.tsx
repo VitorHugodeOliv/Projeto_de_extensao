@@ -7,12 +7,14 @@ import RotaHomePage from "./routes/RotaHomePage";
 import RotaDashboard from "./routes/RotaDashboard";
 import RotaHistoryRegister from "./routes/RotaHistoryRegister";
 import RotaAdminPanel from "./routes/RotaAdminPanel";
+import RotaPublicPage from "./routes/RotaPublicPage";
 
 const App: React.FC = () => {
 
   return (
     <Routes>
       <Route path="/" element={<RotaHomePage/>}/>
+      <Route path="/historias" element={<RotaPublicPage/>}/>
       <Route path="/login" element={<RotaLogin/>}/>
       <Route path="/registro" element={<RotaRegistro/>}/>
       <Route path="/dashboard" element={ <RotaDashboard/>}/>
