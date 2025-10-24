@@ -8,19 +8,22 @@ import RotaDashboard from "./routes/RotaDashboard";
 import RotaHistoryRegister from "./routes/RotaHistoryRegister";
 import RotaAdminPanel from "./routes/RotaAdminPanel";
 import RotaPublicPage from "./routes/RotaPublicPage";
+import RotaHeader from "./routes/RotaHeader"
 
 const App: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<RotaHomePage/>}/>
-      <Route path="/historias" element={<RotaPublicPage/>}/>
-      <Route path="/login" element={<RotaLogin/>}/>
-      <Route path="/registro" element={<RotaRegistro/>}/>
-      <Route path="/dashboard" element={ <RotaDashboard/>}/>
-      <Route path="/perfil" element={ <RotaPerfil/>}/>
-      <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>
-      <Route path="/admin" element={ <RotaAdminPanel/>}/>     
+      <Route index element={<RotaHomePage/>}/>
+      <Route path='/' element={<RotaHeader />}>
+        <Route path="/historias" element={<RotaPublicPage/>}/>
+        <Route path="/login" element={<RotaLogin/>}/>
+        <Route path="/registro" element={<RotaRegistro/>}/>
+        <Route path="/dashboard" element={ <RotaDashboard/>}/>
+        <Route path="/perfil" element={ <RotaPerfil/>}/>
+        <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>
+        <Route path="/admin" element={ <RotaAdminPanel/>}/> 
+      </Route>    
     </Routes>
   );
 };
