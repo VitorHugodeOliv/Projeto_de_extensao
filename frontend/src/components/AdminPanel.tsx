@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
-import api from "../apis/apiAxios"
+import api from "../apis/apiAxios";
 import "./css/cssAdminPanel.css";
+
+interface Arquivo {
+  id: number;
+  nome: string;
+  tipo: string;
+  caminho: string;
+  tamanho: number;
+}
 
 interface Historia {
   id: number;
@@ -11,6 +19,7 @@ interface Historia {
   categoria_nome: string;
   nome_usuario: string;
   data_criacao: string;
+  arquivos: Arquivo[];
 }
 
 interface Props {
@@ -18,16 +27,39 @@ interface Props {
   setToken: (token: string | null) => void;
 }
 
+type Filtro =
+  | "em-analise"
+  | "todas"
+  | "aprovadas"
+  | "rejeitadas"
+  | "mais-recentes"
+  | "mais-antigas";
+
 const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
   const [historias, setHistorias] = useState<Historia[]>([]);
+  const [historiasFiltradas, setHistoriasFiltradas] = useState<Historia[]>([]);
+  const [filtroAtivo, setFiltroAtivo] = useState<Filtro>("em-analise");
   const [mensagem, setMensagem] = useState("");
+  const [menuAberto, setMenuAberto] = useState(false);
 
   const carregarHistorias = async () => {
     try {
       const res = await api.get("http://localhost:5000/admin/solicitacoes", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setHistorias(res.data.historias || []);
+      const todas = res.data.historias || [];
+      console.log("🧩 [DEBUG FRONT] Histórias recebidas:", res.data.historias);
+
+      if (res.data.historias?.length) {
+        console.log("📸 [DEBUG FRONT] Primeira história:", res.data.historias[0]);
+        if (res.data.historias[0].arquivos) {
+          console.log("📂 [DEBUG FRONT] Arquivos da primeira história:", res.data.historias[0].arquivos);
+        } else {
+          console.warn("⚠️ [DEBUG FRONT] Nenhum campo 'arquivos' encontrado!");
+        }
+      }
+      setHistorias(todas);
+      aplicarFiltro(filtroAtivo, todas);
       setMensagem("");
     } catch (err) {
       console.error(err);
@@ -39,33 +71,47 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
     carregarHistorias();
   }, []);
 
-  const aprovarHistoria = async (id: number) => {
-    try {
-      await api.patch(
-        "http://localhost:5000/admin/solicitacoes/aprovar",
-        { historia_id: id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMensagem(`História ${id} aprovada com sucesso!`);
-      carregarHistorias();
-    } catch (err) {
-      console.error(err);
-      setMensagem("Erro ao aprovar a história.");
-    }
-  };
+  const aplicarFiltro = (filtro: Filtro, base?: Historia[]) => {
+    const lista = base || historias;
+    let filtradas: Historia[] = [];
 
-  const rejeitarHistoria = async (id: number) => {
-    try {
-      await api.delete("http://localhost:5000/admin/solicitacoes/rejeitar", {
-        headers: { Authorization: `Bearer ${token}` },
-        data: { historia_id: id },
-      });
-      setMensagem(`História ${id} rejeitada e removida com sucesso!`);
-      carregarHistorias();
-    } catch (err) {
-      console.error(err);
-      setMensagem("Erro ao rejeitar a história.");
+    switch (filtro) {
+      case "todas":
+        filtradas = [...lista];
+        break;
+      case "em-analise":
+        filtradas = lista.filter((h) =>
+          ["em análise", "pendente"].includes(h.status.toLowerCase())
+        );
+        break;
+      case "aprovadas":
+        filtradas = lista.filter(
+          (h) => h.status.toLowerCase() === "aprovada"
+        );
+        break;
+      case "rejeitadas":
+        filtradas = lista.filter(
+          (h) => h.status.toLowerCase() === "rejeitada"
+        );
+        break;
+      case "mais-recentes":
+        filtradas = [...lista].sort(
+          (a, b) =>
+            new Date(b.data_criacao).getTime() -
+            new Date(a.data_criacao).getTime()
+        );
+        break;
+      case "mais-antigas":
+        filtradas = [...lista].sort(
+          (a, b) =>
+            new Date(a.data_criacao).getTime() -
+            new Date(b.data_criacao).getTime()
+        );
+        break;
     }
+
+    setFiltroAtivo(filtro);
+    setHistoriasFiltradas(filtradas);
   };
 
   const handleLogout = () => {
@@ -74,84 +120,115 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
   };
 
   return (
-    <div className="admin-panel">
-      <h2>Painel do Administrador</h2>
-
-      {mensagem && <div className="admin-message">{mensagem}</div>}
-
-      <button className="logout-btn" onClick={handleLogout}>
-        Sair
+    <div className="admin-container">
+      <button
+        className="menu-toggle"
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        ☰
       </button>
 
-      <div className="admin-lista">
-        {historias.length === 0 ? (
-          <p className="sem-historias">Nenhuma história cadastrada.</p>
-        ) : (
-          historias.map((h) => (
-            <div key={h.id} className="historia-card">
-              <h3>{h.titulo}</h3>
-              <p>
-                <strong>Autor:</strong> {h.autor_artista || "Não informado"}
-              </p>
-              <p>
-                <strong>Categoria:</strong> {h.categoria_nome}
-              </p>
-              <p>
-                <strong>Enviado por:</strong> {h.nome_usuario}
-              </p>
-              <p>
-                <strong>Data:</strong>{" "}
-                {new Date(h.data_criacao).toLocaleString("pt-BR")}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                <span
-                  className={`status ${
-                    h.status === "Aprovada"
-                      ? "status-aprovada"
-                      : h.status === "Em análise"
-                      ? "status-analise"
-                      : "status-outro"
-                  }`}
-                >
-                  {h.status}
-                </span>
-              </p>
-              {h.conteudo && (
-                <details>
-                  <summary>Ver conteúdo</summary>
-                  <p className="conteudo">{h.conteudo}</p>
-                </details>
-              )}
+      <aside className={`admin-sidebar ${menuAberto ? "aberto" : ""}`}>
+        <h3>Filtros</h3>
+        <ul>
+          <li
+            className={filtroAtivo === "em-analise" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("em-analise")}
+          >
+            🟠 Em Análise
+          </li>
+          <li
+            className={filtroAtivo === "todas" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("todas")}
+          >
+            📋 Todas
+          </li>
+          <li
+            className={filtroAtivo === "aprovadas" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("aprovadas")}
+          >
+            🟢 Aprovadas
+          </li>
+          <li
+            className={filtroAtivo === "rejeitadas" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("rejeitadas")}
+          >
+            🔴 Rejeitadas
+          </li>
+          <hr />
+          <li
+            className={filtroAtivo === "mais-recentes" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("mais-recentes")}
+          >
+            ⏰ Mais recentes
+          </li>
+          <li
+            className={filtroAtivo === "mais-antigas" ? "ativo" : ""}
+            onClick={() => aplicarFiltro("mais-antigas")}
+          >
+            🕰️ Mais antigas
+          </li>
+        </ul>
+        <button className="logout-btn" onClick={handleLogout}>
+          Sair
+        </button>
+      </aside>
 
-              <div className="botoes-acoes">
-                {h.status === "Em análise" ? (
-                  <>
-                    <button
-                      className="btn-aprovar"
-                      onClick={() => aprovarHistoria(h.id)}
+      <main className="admin-main">
+        <h2>Painel do Administrador</h2>
+
+        {mensagem && <div className="admin-message">{mensagem}</div>}
+
+        {historiasFiltradas.length === 0 ? (
+          <p className="sem-historias">Nenhuma história encontrada.</p>
+        ) : (
+          <div className="admin-grid">
+            {historiasFiltradas.map((h) => {
+              const imagemPreview = h.arquivos?.find((a) =>
+                a.tipo.startsWith("image/")
+              )?.caminho;
+
+              return (
+                <div
+                  key={h.id}
+                  className="admin-card"
+                  onClick={() =>
+                    (window.location.href = `/admin-card/${h.id}`)
+                  }
+                >
+                  {imagemPreview ? (
+                    <img
+                      src={`http://localhost:5000/${imagemPreview}`}
+                      alt={h.titulo}
+                      className="card-thumb"
+                    />
+                  ) : (
+                    <div className="no-thumb">Sem imagem</div>
+                  )}
+
+                  <div className="card-body">
+                    <h3 className="card-title">{h.titulo}</h3>
+                    <p>
+                      <strong>Proponente:</strong> {h.nome_usuario}
+                    </p>
+                    <p>
+                      <strong>Data:</strong>{" "}
+                      {new Date(h.data_criacao).toLocaleDateString("pt-BR")}
+                    </p>
+                    <span
+                      className={`status-badge ${h.status
+                        .replace(" ", "-")
+                        .toLowerCase()}`}
                     >
-                      ✅ Aprovar
-                    </button>
-                    <button
-                      className="btn-rejeitar"
-                      onClick={() => rejeitarHistoria(h.id)}
-                    >
-                      ❌ Rejeitar
-                    </button>
-                  </>
-                ) : (
-                  <p className="texto-status-final">
-                    {h.status === "Aprovada"
-                      ? "História já aprovada."
-                      : "História removida."}
-                  </p>
-                )}
-              </div>
-            </div>
-          ))
+                      {h.status}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

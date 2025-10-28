@@ -3,7 +3,7 @@ import AdminPainel from "../components/AdminPanel";
 import { useNavigate } from "react-router";
 
 
-function RotaDashboard () {
+function RotaAdminPainel () {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
 
   const navigate = useNavigate()
@@ -22,4 +22,4 @@ function RotaDashboard () {
 
 };
 
-export default RotaDashboard;
+export default RotaAdminPainel;

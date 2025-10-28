@@ -55,7 +55,8 @@ def upload_arquivo():
         caminho = os.path.join(UPLOAD_FOLDER, filename)
         arquivo.save(caminho)
         tamanho_mb = os.path.getsize(caminho) / (1024 * 1024)
-        tipo_ext = filename.rsplit(".", 1)[1].lower()
+        extensao = filename.rsplit(".", 1)[1].lower()
+        tipo_ext = f"image/{extensao}" if extensao in ["png", "jpg", "jpeg", "gif"] else extensao
 
         if tipo_ext in {"png", "jpg", "jpeg", "gif"}:
             qtd_imagens += 1

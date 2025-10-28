@@ -29,7 +29,7 @@ const PreviewMidias: React.FC<Props> = ({ midias, removerArquivo }) => {
                   className="remove-btn"
                   onClick={() => removerArquivo(arquivos.indexOf(file))}
                 >
-                  Remover
+                  X
                 </button>
               </div>
             ))}
@@ -49,7 +49,7 @@ const PreviewMidias: React.FC<Props> = ({ midias, removerArquivo }) => {
                 className="remove-btn"
                 onClick={() => removerArquivo(arquivos.indexOf(file))}
               >
-                Remover
+                X
               </button>
             </div>
           ))}
@@ -68,7 +68,7 @@ const PreviewMidias: React.FC<Props> = ({ midias, removerArquivo }) => {
                 className="remove-btn"
                 onClick={() => removerArquivo(arquivos.indexOf(file))}
               >
-                Remover
+                X
               </button>
             </div>
           ))}

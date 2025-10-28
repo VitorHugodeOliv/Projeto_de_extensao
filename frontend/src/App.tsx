@@ -9,6 +9,7 @@ import RotaHistoryRegister from "./routes/RotaHistoryRegister";
 import RotaAdminPanel from "./routes/RotaAdminPanel";
 import RotaPublicPage from "./routes/RotaPublicPage";
 import RotaHeader from "./routes/RotaHeader"
+import RotaAdminCard from "./routes/RotaAdminCard"
 
 const App: React.FC = () => {
 
@@ -22,7 +23,8 @@ const App: React.FC = () => {
         <Route path="/dashboard" element={ <RotaDashboard/>}/>
         <Route path="/perfil" element={ <RotaPerfil/>}/>
         <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>
-        <Route path="/admin" element={ <RotaAdminPanel/>}/> 
+        <Route path="/admin" element={ <RotaAdminPanel/>}/>
+        <Route path="/admin-card/:id" element={ <RotaAdminCard/>}/>
       </Route>    
     </Routes>
   );

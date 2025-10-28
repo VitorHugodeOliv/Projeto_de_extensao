@@ -58,6 +58,7 @@ def listar_solicitacoes():
     """)
     
     registros = cursor.fetchall()
+
     historias = {}
     for row in registros:
         h_id = row["id"]
