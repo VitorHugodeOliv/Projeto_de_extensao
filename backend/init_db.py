@@ -60,6 +60,8 @@ try:
         CREATE TABLE IF NOT EXISTS Arquivos (
             id INT AUTO_INCREMENT PRIMARY KEY,
             tipo VARCHAR(50),
+            nome_arquivo VARCHAR(255),
+            tamanho FLOAT,
             url_armazenamento TEXT NOT NULL,
             historia_id INT,
             FOREIGN KEY (historia_id) REFERENCES Historias(id)

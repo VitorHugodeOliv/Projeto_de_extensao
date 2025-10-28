@@ -42,7 +42,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
   const aprovarHistoria = async (id: number) => {
     try {
       await api.patch(
-        "http://localhost:5000/admin/solicitacoes",
+        "http://localhost:5000/admin/solicitacoes/aprovar",
         { historia_id: id },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -56,7 +56,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
 
   const rejeitarHistoria = async (id: number) => {
     try {
-      await api.delete("http://localhost:5000/admin/solicitacoes", {
+      await api.delete("http://localhost:5000/admin/solicitacoes/rejeitar", {
         headers: { Authorization: `Bearer ${token}` },
         data: { historia_id: id },
       });

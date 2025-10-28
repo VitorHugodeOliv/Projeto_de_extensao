@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from utils.token_utils import validar_token
 from db import conectar
-from models.usuario_models import atualizar_usuario, buscar_usuario_por_id
+from models.models import atualizar_usuario, buscar_usuario_por_id
 from config import settings
 from routes.upload_routes import upload_bp
 from routes.admin_bp import admin_bp

@@ -84,9 +84,9 @@ def upload_arquivo():
         caminho = caminho.replace("\\", "/")
 
         cursor.execute("""
-            INSERT INTO Arquivos (tipo, url_armazenamento, historia_id)
-            VALUES (%s, %s, %s)
-        """, (tipo_ext, caminho, historia_id))
+            INSERT INTO Arquivos (tipo, nome_arquivo, tamanho, url_armazenamento, historia_id)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (tipo_ext, filename, tamanho_mb, caminho, historia_id))
         arquivos_enviados.append(filename)
 
     conn.commit()
