@@ -24,11 +24,11 @@
 .historia-card {
   width: 100%;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   background: #fff;
   color: #333;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .historia-card:hover {
@@ -38,8 +38,9 @@
 
 .historia-imagem {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
+  display: block;
 }
 
 .historia-conteudo {
@@ -47,7 +48,7 @@
 }
 
 .historia-conteudo h2 {
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   margin-bottom: 0.5rem;
 }
 
@@ -71,23 +72,109 @@
   color: red;
 }
 
-@media (max-width: 1200px) {
+.acoes-card {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+
+.btn-curtir,
+.btn-comentar {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #555;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icone-coracao {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.3s ease;
+}
+
+/* Efeito hover */
+.btn-curtir:hover .icone-coracao {
+  transform: scale(1.2);
+}
+
+/* Estado ativo */
+.btn-curtir.ativo .icone-coracao {
+  filter: drop-shadow(0 0 4px rgba(230, 57, 70, 0.6));
+}
+
+/* Pulso animado */
+@keyframes pulsoAnimacao {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.4); }
+  50% { transform: scale(1.2); }
+  70% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.btn-curtir.pulso .icone-coracao {
+  animation: pulsoAnimacao 0.4s ease-in-out;
+}
+
+.alerta-login {
+  background-color: #ffe4e1;
+  color: #b22222;
+  border: 1px solid #f5c2c2;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  margin: 1rem auto;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.alerta-login button {
+  border: none;
+  background: transparent;
+  color: #b22222;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (min-width: 1200px) {
   .historias-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  .historias-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    max-width: 1100px;
+    max-width: 900px;
+  }
+
+  .historia-imagem {
+    height: 200px;
   }
 }
 
-@media (min-width: 1600px) {
+@media (max-width: 767px) {
   .historias-grid {
-    gap: 1rem;
-    max-width: 1300px;
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    max-width: 600px;
   }
-}
 
-@media (min-width: 2000px) {
-  .historias-grid {
-    gap: 0.8rem;
-    max-width: 1200px;
+  .historia-card {
+    width: 90%;
+  }
+
+  .historia-imagem {
+    height: 180px;
+  }
+
+  .public-page h1 {
+    font-size: 1.6rem;
   }
 }

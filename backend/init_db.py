@@ -79,6 +79,30 @@ try:
             FOREIGN KEY (historia_id) REFERENCES Historias(id) ON DELETE SET NULL
         )
     """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Curtidas (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario_id INT NOT NULL,
+            historia_id INT NOT NULL,
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (usuario_id) REFERENCES Usuarios(id) ON DELETE CASCADE,
+            FOREIGN KEY (historia_id) REFERENCES Historias(id) ON DELETE CASCADE,
+            UNIQUE (usuario_id, historia_id)
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Comentarios (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario_id INT NOT NULL,
+            historia_id INT NOT NULL,
+            texto TEXT NOT NULL,
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (usuario_id) REFERENCES Usuarios(id) ON DELETE CASCADE,
+            FOREIGN KEY (historia_id) REFERENCES Historias(id) ON DELETE CASCADE
+        )
+    """)
     print("Tabelas verificadas/criadas.")
 
     # ----------------- Admin padrão -----------------
@@ -113,9 +137,9 @@ try:
         else:
             print(f"Categoria '{nome}' já existe.")
     
-    inserir_historias_iniciais()
 
     conn.commit()
+    inserir_historias_iniciais()
 
 except mysql.connector.Error as err:
     print(f"Erro: {err}")

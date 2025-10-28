@@ -58,4 +58,22 @@ api.interceptors.response.use(
   }
 );
 
+export const curtirHistoria = async (historiaId: number) => {
+  return api.post(`/historias/${historiaId}/curtir`);
+};
+
+export const getCurtidas = async (historiaId: number) => {
+  const res = await api.get(`/historias/${historiaId}/curtidas`);
+  return res.data.total_curtidas as number;
+};
+
+export const comentarHistoria = async (historiaId: number, texto: string) => {
+  return api.post(`/historias/${historiaId}/comentarios`, { texto });
+};
+
+export const getComentarios = async (historiaId: number) => {
+  const res = await api.get(`/historias/${historiaId}/comentarios`);
+  return res.data as { id: number; texto: string; autor: string; data_criacao: string }[];
+};
+
 export default api;

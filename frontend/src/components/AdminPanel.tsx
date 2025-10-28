@@ -48,16 +48,6 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       const todas = res.data.historias || [];
-      console.log("🧩 [DEBUG FRONT] Histórias recebidas:", res.data.historias);
-
-      if (res.data.historias?.length) {
-        console.log("📸 [DEBUG FRONT] Primeira história:", res.data.historias[0]);
-        if (res.data.historias[0].arquivos) {
-          console.log("📂 [DEBUG FRONT] Arquivos da primeira história:", res.data.historias[0].arquivos);
-        } else {
-          console.warn("⚠️ [DEBUG FRONT] Nenhum campo 'arquivos' encontrado!");
-        }
-      }
       setHistorias(todas);
       aplicarFiltro(filtroAtivo, todas);
       setMensagem("");
