@@ -81,8 +81,24 @@ def listar_historias():
         cursor.execute(sql_historias)
         historias = cursor.fetchall()
 
-        historia_ids = [h["id"] for h in historias]
+        token_header = request.headers.get("Authorization")
+        user_id = None
+        if token_header and token_header.startswith("Bearer "):
+            try:
+                decoded = jwt.decode(token_header.split(" ")[1], SECRET_KEY, algorithms=["HS256"])
+                user_id = decoded.get("id")
+            except Exception:
+                pass
 
+        curtidas_usuario = []
+        if user_id:
+            cursor.execute("SELECT historia_id FROM Curtidas WHERE usuario_id = %s", (user_id,))
+            curtidas_usuario = [row["historia_id"] for row in cursor.fetchall()]
+
+        for h in historias:
+            h["curtido"] = h["id"] in curtidas_usuario
+
+        historia_ids = [h["id"] for h in historias]
         arquivos_map = {}
         if historia_ids:
             formato = ",".join(["%s"] * len(historia_ids))
@@ -167,12 +183,32 @@ def curtir_historia(historia_id):
 def contar_curtidas(historia_id):
     try:
         conn = conectar()
-        cursor = conn.cursor()
-        cursor.execute("SELECT COUNT(*) FROM Curtidas WHERE historia_id=%s", (historia_id,))
-        total = cursor.fetchone()[0]
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("SELECT COUNT(*) AS total FROM Curtidas WHERE historia_id=%s", (historia_id,))
+        total = cursor.fetchone()["total"]
+
+        auth_header = request.headers.get("Authorization")
+        usuario_curtiu = False
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            usuario_id = decoded["id"]
+
+            cursor.execute(
+                "SELECT 1 FROM Curtidas WHERE usuario_id=%s AND historia_id=%s",
+                (usuario_id, historia_id)
+            )
+            usuario_curtiu = cursor.fetchone() is not None
+
         cursor.close()
         conn.close()
-        return jsonify({"total_curtidas": total}), 200
+
+        return jsonify({
+            "total_curtidas": total,
+            "usuario_curtiu": usuario_curtiu
+        }), 200
+
     except Exception as e:
         print("Erro ao contar curtidas:", e)
         return jsonify({"message": "Erro ao contar curtidas."}), 500

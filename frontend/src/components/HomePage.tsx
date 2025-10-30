@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
         <p>
           Explore, compartilhe e preserve as histórias culturais de Baraúna e do Nordeste.
         </p>
-        <a className="cta-button" href="/login">
+        <a className="cta-button" href="/historias">
           Comece agora
         </a>
       </main>

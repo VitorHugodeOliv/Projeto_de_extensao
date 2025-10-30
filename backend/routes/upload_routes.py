@@ -1,5 +1,7 @@
 import os
+import re
 import jwt
+from datetime import datetime
 from flask import Blueprint, request, jsonify
 from db import conectar
 from config import settings
@@ -51,11 +53,14 @@ def upload_arquivo():
         if not allowed_file(arquivo.filename):
             continue
 
-        filename = secure_filename(arquivo.filename)
-        caminho = os.path.join(UPLOAD_FOLDER, filename)
+        nome_original = secure_filename(arquivo.filename)
+        nome_limpo = re.sub(r"[()\s]+", "_", nome_original)
+        nome_final = f"{os.path.splitext(nome_limpo)[0]}_{datetime.now().strftime('%Y%m%d_%H%M%S')}{os.path.splitext(nome_limpo)[1]}"
+
+        caminho = os.path.join(UPLOAD_FOLDER, nome_final)
         arquivo.save(caminho)
         tamanho_mb = os.path.getsize(caminho) / (1024 * 1024)
-        extensao = filename.rsplit(".", 1)[1].lower()
+        extensao = nome_final.rsplit(".", 1)[1].lower()
         tipo_ext = f"image/{extensao}" if extensao in ["png", "jpg", "jpeg", "gif"] else extensao
 
         if tipo_ext in {"png", "jpg", "jpeg", "gif"}:
@@ -87,8 +92,8 @@ def upload_arquivo():
         cursor.execute("""
             INSERT INTO Arquivos (tipo, nome_arquivo, tamanho, url_armazenamento, historia_id)
             VALUES (%s, %s, %s, %s, %s)
-        """, (tipo_ext, filename, tamanho_mb, caminho, historia_id))
-        arquivos_enviados.append(filename)
+        """, (tipo_ext, nome_final, tamanho_mb, caminho, historia_id))
+        arquivos_enviados.append(nome_final)
 
     conn.commit()
     cursor.close()

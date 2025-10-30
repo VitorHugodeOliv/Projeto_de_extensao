@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"
-import api, {
-  curtirHistoria,
-  getComentarios,
-} from "../apis/apiAxios";
-import coraçãoCheio from "../../public/icons/heart-filled.svg"
-import coraçãoVazio from "../../public/icons/heart-outline.svg"
+import { useNavigate } from "react-router-dom";
+import api, { getComentarios } from "../apis/apiAxios";
+import coracaoCheio from "../assets/icons/heart-filled.svg";
+import coracaoVazio from "../assets/icons/heart-outline.svg";
 import "./css/cssPublicPage.css";
-
-const API_BASE = "http://localhost:5000/";
-
-type ExtensaoImagem = "png" | "jpg" | "jpeg" | "gif";
+import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
 
 interface Arquivo {
   tipo: string;
@@ -21,33 +15,47 @@ interface Historia {
   id: number;
   titulo: string;
   subtitulo: string;
-  autor?: string;
+  autor_artista?: string;
   status?: string;
   data_criacao: string;
   arquivos?: Arquivo[];
 }
 
-const likeSound = new Audio("../../public/sons/like.wav");
-const unlikeSound = new Audio("../../public/sons/unlike.wav");
-
-const IMAGE_TYPES: ExtensaoImagem[] = ["png", "jpg", "jpeg", "gif"];
-
 function getCapaImagem(arquivos?: Arquivo[]): string {
   if (!arquivos || arquivos.length === 0) return "/imagens/placeholder.jpg";
-  const capa = arquivos.find((a) => IMAGE_TYPES.includes(a.tipo as ExtensaoImagem));
-  return capa ? `${API_BASE}${capa.url}` : "/imagens/placeholder.jpg";
+
+  const capa = arquivos.find(
+    (a) =>
+      a.tipo.toLowerCase().startsWith("image") ||
+      ["png", "jpg", "jpeg", "gif"].includes(a.tipo.toLowerCase())
+  );
+
+  if (!capa) return "/imagens/placeholder.jpg";
+
+  const API_BASE = "http://localhost:5000";
+  let url = capa.url.trim();
+  if (!url.startsWith("/")) url = "/" + url;
+  if (!url.startsWith("/uploads")) url = "/uploads" + url;
+
+  const cleanUrl = `${API_BASE}${url}`.replace(/([^:]\/)\/+/g, "$1");
+  return cleanUrl;
 }
 
 const PublicPage: React.FC = () => {
   const [historias, setHistorias] = useState<Historia[]>([]);
-  const [curtidasAtivas, setCurtidasAtivas] = useState<number[]>([]);
   const [comentariosCount, setComentariosCount] = useState<Record<number, number>>({});
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
-  const [mensagemLogin, setMensagemLogin] = useState<string | null>(null);
-
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const {
+    curtido,
+    mensagem,
+    setMensagem,
+    handleCurtir,
+    setCurtido,
+  } = useInteracoesHistoria(undefined, token);
 
   useEffect(() => {
     const fetchHistorias = async () => {
@@ -55,6 +63,26 @@ const PublicPage: React.FC = () => {
         const res = await api.get<Historia[]>("/historias");
         const aprovadas = res.data.filter((h) => h.status === "Aprovada");
         setHistorias(aprovadas);
+
+        const mapaCurtido: Record<number, boolean> = {};
+        const mapaCurtidas: Record<number, number> = {};
+
+        for (const h of aprovadas) {
+          try {
+            const response = await fetch(`http://localhost:5000/historias/${h.id}/curtidas`, {
+              headers: token ? { Authorization: `Bearer ${token}` } : {},
+            });
+            const data = await response.json();
+            mapaCurtido[h.id] = data.usuario_curtiu || false;
+            mapaCurtidas[h.id] = data.total_curtidas || 0;
+          } catch (err) {
+            console.error(`Erro ao buscar curtidas da história ${h.id}:`, err);
+            mapaCurtido[h.id] = false;
+            mapaCurtidas[h.id] = 0;
+          }
+        }
+
+        setCurtido(mapaCurtido);
 
         for (const h of aprovadas) {
           const listaComentarios = await getComentarios(h.id);
@@ -72,35 +100,7 @@ const PublicPage: React.FC = () => {
     };
 
     fetchHistorias();
-  }, []);
-
-  const handleCurtir = async (historiaId: number) => {
-    if (!token) {
-      setMensagemLogin("Faça login para curtir histórias ❤️");
-      return;
-    }
-
-    const jaCurtiu = curtidasAtivas.includes(historiaId);
-
-    if (jaCurtiu) {
-    unlikeSound.currentTime = 0;
-    unlikeSound.play();
-  } else {
-    likeSound.currentTime = 0;
-    likeSound.play();
-  }
-
-
-    setCurtidasAtivas((prev) =>
-      jaCurtiu ? prev.filter((id) => id !== historiaId) : [...prev, historiaId]
-    );
-
-    try {
-      await curtirHistoria(historiaId);
-    } catch (err) {
-      console.error("Erro ao curtir:", err);
-    }
-  };
+  }, [token, setCurtido]);
 
   if (carregando) return <p className="mensagem-status">Carregando histórias...</p>;
   if (erro) return <p className="mensagem-status erro">{erro}</p>;
@@ -109,10 +109,10 @@ const PublicPage: React.FC = () => {
     <div className="public-page">
       <h1 className="titulo-principal">Histórias Culturais</h1>
 
-      {mensagemLogin && (
+      {mensagem && (
         <div className="alerta-login">
-          {mensagemLogin}
-          <button onClick={() => setMensagemLogin(null)}>Fechar</button>
+          {mensagem}
+          <button onClick={() => setMensagem(null)}>Fechar</button>
         </div>
       )}
 
@@ -122,7 +122,7 @@ const PublicPage: React.FC = () => {
         <div className="historias-grid">
           {historias.map((historia) => {
             const capa = getCapaImagem(historia.arquivos);
-            const curtiu = curtidasAtivas.includes(historia.id);
+            const jaCurtiu = curtido[historia.id] ?? false;
 
             return (
               <div key={historia.id} className="historia-card">
@@ -141,7 +141,7 @@ const PublicPage: React.FC = () => {
                     <h2 className="historia-titulo">{historia.titulo}</h2>
                     <p className="historia-subtitulo">{historia.subtitulo}</p>
                     <small className="historia-info">
-                      Por <strong>{historia.autor || "Autor desconhecido"}</strong> —{" "}
+                      Por <strong>{historia.autor_artista || "Autor desconhecido"}</strong> —{" "}
                       {new Date(historia.data_criacao).toLocaleDateString("pt-BR", {
                         day: "2-digit",
                         month: "long",
@@ -153,22 +153,16 @@ const PublicPage: React.FC = () => {
 
                 <div className="acoes-card">
                   <button
-                    className={`btn-curtir ${curtiu ? "ativo pulso" : ""}`}
+                    className={`btn-curtir ${jaCurtiu ? "ativo pulso" : ""}`}
                     onClick={() => handleCurtir(historia.id)}
-                    title={curtiu ? "Remover curtida" : "Curtir história"}
                     onAnimationEnd={(e) => e.currentTarget.classList.remove("pulso")}
                   >
                     <img
-                      src={
-                        curtiu
-                          ? coraçãoCheio
-                          : coraçãoVazio
-                      }
-                      alt={curtiu ? "Coração cheio" : "Coração vazio"}
+                      src={jaCurtiu ? coracaoCheio : coracaoVazio}
+                      alt={jaCurtiu ? "Coração cheio" : "Coração vazio"}
                       className="icone-coracao"
                     />
                   </button>
-
                   <button
                     className="btn-comentar"
                     title="Ver comentários"

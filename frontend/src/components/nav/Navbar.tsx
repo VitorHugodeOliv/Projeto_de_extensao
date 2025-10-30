@@ -60,7 +60,7 @@ const Navbar: React.FC = () => {
           )}
 
           {usuario ? (
-            <li onClick={() => { handleLogout(); toggleMenu(); }}>
+            <li onClick={() => { handleLogout(); toggleMenu(); }} className="logout">
               Sair ({usuario.nome})
             </li>
           ) : (

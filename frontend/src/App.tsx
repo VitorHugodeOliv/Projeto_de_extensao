@@ -10,7 +10,7 @@ import RotaAdminPanel from "./routes/RotaAdminPanel";
 import RotaPublicPage from "./routes/RotaPublicPage";
 import RotaHeader from "./routes/RotaHeader"
 import RotaAdminCard from "./routes/RotaAdminCard"
-import HistoriaDetalhes from "./components/HistoriaDetalhes";
+import HistoryDetails from "./components/HistoryDetails";
 
 const App: React.FC = () => {
 
@@ -19,7 +19,7 @@ const App: React.FC = () => {
       <Route index element={<RotaHomePage/>}/>
       <Route path='/' element={<RotaHeader />}>
         <Route path="/historias" element={<RotaPublicPage/>}/>
-        <Route path="/historia/:id" element={<HistoriaDetalhes />} />
+        <Route path="/historia/:id" element={<HistoryDetails />} />
         <Route path="/login" element={<RotaLogin/>}/>
         <Route path="/registro" element={<RotaRegistro/>}/>
         <Route path="/dashboard" element={ <RotaDashboard/>}/>

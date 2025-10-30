@@ -9,7 +9,7 @@ def inserir_historias_iniciais():
         historias_iniciais = [
             {
                 "titulo": "A Nossa Comédia Dell’Arte",
-                "subtitulo": "Projeto criado com Ajuda da Lei Paulo Gustavo",
+                "subtitulo": "Projeto criado com ajuda da Lei Paulo Gustavo",
                 "proponente": 1,
                 "autor_artista": "Vitor Hugo, Roberto Vitor, Jassandra Helena",
                 "categoria": "Teatro",
@@ -26,39 +26,52 @@ def inserir_historias_iniciais():
                     "O desfecho celebra o triunfo do amor e da liberdade sobre a rigidez das convenções sociais, transformando a história em uma metáfora sobre a importância da arte e da sensibilidade na construção de uma sociedade mais humana e afetiva."
                 ),
                 "imagens": [
-                    "uploads/imagens (1).png",
-                    "uploads/imagens (2).png",
+                    "uploads/imagens (4).png",
+                    "uploads/imagens (5).png",
+                    "uploads/imagens (14).png",
+                    "uploads/imagens (15).png",
+                    "uploads/imagens (21).jpeg",
                 ]
             },
             {
-                "titulo": "O Espetáculo da Praça",
-                "subtitulo": "O teatro popular que encantava Baraúna",
+                "titulo": "Espetáculo:  Nossos Forros",
+                "subtitulo": "Projeto criado com ajuda da Lei Paulo Gustavo",
                 "proponente": 1,
-                "autor_artista": "Grupo Raízes",
+                "autor_artista": "Jassandra Helena, Roberto Vitor",
                 "categoria": "Teatro",
                 "status": "Aprovada",
                 "conteudo": (
-                    "Durante anos, o coreto da praça serviu de palco para o grupo Raízes, "
-                    "que trazia alegria e reflexão por meio do teatro de rua."
+                    "Nossos Forros é um espetáculo cênico-musical que celebra a história, a diversidade e a afetividade do forró nordestino, unindo teatro, dança e música em uma narrativa leve, popular e interativa."
+                    "Ambientado em um bar fictício, o enredo inicia-se com um grupo de amigos discutindo quais artistas e estilos de forró deveriam tocar no local, desencadeando uma viagem no tempo e na memória cultural."
+                    "Sob a condução da personagem Jassandra, dona do estabelecimento, o público é transportado desde o forró tradicional das décadas de 1950 — com sanfoneiro, zabumba e triângulo — "
+                    "até as sonoridades contemporâneas que misturam o autêntico pé-de-serra com o forró eletrônico e o brega-romântico."
+                    "Ao longo das cenas, o espetáculo costura humor, crítica social e nostalgia através de diálogos espontâneos e coreografias que homenageiam ícones como Luiz Gonzaga, Flávio José, Dorgival Dantas, Mastruz com Leite, Aviões do Forró, Calcinha Preta, Saia Rodada e tantos outros."
+                    "Cada quadro musical é construído como um retrato vivo da cultura popular, alternando momentos de dança, dramatizações e performances ao vivo."
                 ),
                 "imagens": [
-                    "uploads/imagens (20).png",
+                    "uploads/image (9).png",
+                    "uploads/image (18).png",
+                    "uploads/image (19).png"
                 ]
             },
             {
-                "titulo": "O Passo da Tradição",
-                "subtitulo": "A dança que atravessou gerações",
+                "titulo": "A Mulher Cavalo",
+                "subtitulo": "Projeto criado com ajuda da Lei Paulo Gustavo",
                 "proponente": 1,
-                "autor_artista": "Mestre Chico",
-                "categoria": "Dança",
+                "autor_artista": "Vitor Hugo, Jassandra Helena, Roberto Vitor",
+                "categoria": "Audiovisual",
                 "status": "Aprovada",
                 "conteudo": (
-                    "Mestre Chico ensinava que a dança era mais do que movimento: "
-                    "era a forma de manter viva a história e o orgulho do povo nordestino."
+                    "A Mulher Cavalo é um curta-metragem de terror psicológico ambientado no Nordeste brasileiro, onde um grupo de amigos decide passar um fim de semana em uma casa isolada."
+                    "O filme inicia em tom leve e cotidiano. O roteiro constrói gradualmente a atmosfera de medo por meio de pequenas anormalidades: barulhos do lado de fora, sensações de ser observado"
+                    "A narrativa avança para o caos quando os personagens decidem pregar uma peça em um dos amigos, mas a brincadeira toma um rumo trágico."
+                    "Um dos integrantes, Emanuel, desaparece misteriosamente e seu corpo é encontrado pendurado em uma árvore. A partir desse momento, o grupo mergulha em desespero: o pânico, a desconfiança e a falta de comunicação com o mundo exterior tornam o ambiente claustrofóbico e paranoico."
                 ),
                 "imagens": [
-                    "uploads/imagens (15).png",
-                    "uploads/imagens (18).png",
+                    "uploads/imagens (22).jpg",
+                    "uploads/imagens (11).png",
+                    "uploads/imagens (17).png",
+                    "uploads/imagens (23).jpg",
                 ]
             },
         ]
