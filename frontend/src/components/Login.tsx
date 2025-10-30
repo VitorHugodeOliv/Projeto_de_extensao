@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import api from "../apis/apiAxios"
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import "./css/cssLogin.css"
 
 interface Props {
@@ -11,7 +12,6 @@ interface Props {
 const Login: React.FC<Props> = ({ setToken }) => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [mensagem, setMensagem] = useState("");
   
   const navigate = useNavigate()
 
@@ -22,7 +22,6 @@ const Login: React.FC<Props> = ({ setToken }) => {
   const loginResponse = async () => {
     try {
       const res = await api.post("http://localhost:5000/login", { email, senha });
-      setMensagem(res.data.message);
 
       const accessToken = res.data.access_token;
       const refreshToken = res.data.refresh_token;
@@ -31,17 +30,30 @@ const Login: React.FC<Props> = ({ setToken }) => {
         localStorage.setItem("token", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         setToken(accessToken);
+        toast.success("Login realizado com sucesso! 🎉");
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
-        setMensagem(err.response.data.message);
+        const status = err.response.status;
+        const msgBackend = err.response.data.message;
+        if (status === 401 || status === 403) {
+          toast.error("Email ou senha incorretos. Tente novamente ⚠️");
+        } else if (msgBackend) {
+          toast.error(msgBackend);
+        } else {
+          toast.error("Erro inesperado. Tente novamente mais tarde 😕");
+        }
       } else {
-        setMensagem("Erro desconhecido");
+        toast.error("Erro de conexão com o servidor 😢");
       }
     }
   };
 
   const handleLogin = async () => {
+    if (!email || !senha) {
+      toast.warning("Preencha todos os campos antes de entrar!");
+      return;
+    }
     await loginResponse()
     handleNavigate()
   }
@@ -71,8 +83,6 @@ const Login: React.FC<Props> = ({ setToken }) => {
       <p className="register-link" onClick={handleRegister}>
         Ainda não tem uma conta? <span>clique aqui</span>.
       </p>
-
-      {mensagem && <p className="mensagem">{mensagem}</p>}
     </div>
   );
 };

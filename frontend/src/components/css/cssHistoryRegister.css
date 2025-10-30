@@ -189,6 +189,28 @@ body {
   background: rgba(185, 28, 28, 0.95);
 }
 
+.upload-progress {
+  margin-top: 1rem;
+  width: 100%;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.upload-progress .progress-bar {
+  height: 12px;
+  background: linear-gradient(90deg, #009170, #5cd495);
+  transition: width 0.3s ease;
+}
+
+.upload-progress p {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: #333;
+}
+
 @media (max-width: 1024px) {
   .history-register {
     padding: 1.8rem;
