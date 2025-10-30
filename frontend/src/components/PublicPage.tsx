@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import api, { getComentarios } from "../apis/apiAxios";
 import coracaoCheio from "../assets/icons/heart-filled.svg";
 import coracaoVazio from "../assets/icons/heart-outline.svg";
-import "./css/cssPublicPage.css";
 import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
+import ModalHistoria from "../components/ModalHistoria";
+import "./css/cssPublicPage.css";
 
 interface Arquivo {
   tipo: string;
@@ -46,6 +47,7 @@ const PublicPage: React.FC = () => {
   const [erro, setErro] = useState<string | null>(null);
   const [filtro, setFiltro] = useState("recentes");
   const [categoriaFiltro, setCategoriaFiltro] = useState("todas");
+  const [historiaSelecionada, setHistoriaSelecionada] = useState<number | null>(null);
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -157,6 +159,12 @@ const PublicPage: React.FC = () => {
         <p className="mensagem-status">Nenhuma história encontrada.</p>
       ) : (
         <div key={`${filtro}-${categoriaFiltro}`} className="historias-grid">
+          {historiaSelecionada && (
+            <ModalHistoria
+              historiaId={historiaSelecionada}
+              onClose={() => setHistoriaSelecionada(null)}
+            />
+          )}
           {historiasFiltradas.map((historia) => {
             const capa = getCapaImagem(historia.arquivos);
             const jaCurtiu = curtido[historia.id] ?? false;
@@ -165,7 +173,7 @@ const PublicPage: React.FC = () => {
               <div key={historia.id} className="historia-card">
                 <div
                   className="historia-click-area"
-                  onClick={() => navigate(`/historia/${historia.id}`)}
+                  onClick={() => setHistoriaSelecionada(historia.id)}
                 >
                   <img src={capa} alt={historia.titulo} className="historia-imagem" />
                   <div className="historia-conteudo">

@@ -1,0 +1,313 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.modal-container {
+    background: #ffffff;
+    border-radius: 18px;
+    max-width: 850px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 2rem 2rem 2.5rem;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease;
+    scrollbar-width: thin;
+    scrollbar-color: #009170 #e0e0e0;
+}
+
+.modal-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #009170, #5cd495);
+    border-radius: 10px;
+}
+
+.btn-fechar {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #009170;
+    transition: transform 0.2s;
+}
+
+.btn-fechar:hover {
+    transform: scale(1.15);
+}
+
+.cabecalho {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.cabecalho h1 {
+    font-size: 1.8rem;
+    color: #009170;
+    font-weight: 700;
+}
+
+.cabecalho h3 {
+    font-size: 1.1rem;
+    color: #444;
+    margin-top: 0.4rem;
+}
+
+.cabecalho .autor {
+    color: #777;
+    font-size: 0.9rem;
+    margin-top: 0.6rem;
+}
+
+.conteudo {
+    text-align: justify;
+    color: #333;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.midias-galeria {
+    position: relative;
+    width: 100%;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.midia-ativa {
+    width: 100%;
+    max-width: 760px;
+    max-height: 480px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.midia-ativa img,
+.midia-ativa video,
+.midia-ativa audio {
+    width: 100%;
+    max-height: 480px;
+    border-radius: 14px;
+    cursor: pointer;
+    object-fit: contain;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.midia-ativa img:hover,
+.midia-ativa video:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 145, 112, 0.4);
+}
+
+.midia-ativa audio {
+    width: 60%;
+    max-width: 500px;
+    margin: 0 auto;
+    display: block;
+    border-radius: 6px;
+}
+
+.seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 135, 145, 0.6);
+    border: none;
+    color: white;
+    font-size: 2.2rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+}
+
+.seta:hover {
+    background: rgba(0, 145, 112, 0.8);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.seta-esquerda {
+    left: 12px;
+}
+
+.seta-direita {
+    right: 12px;
+}
+
+.overlay-expandida {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 10, 10, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 4000;
+    animation: fadeIn 0.3s ease;
+}
+
+.midia-expandida {
+    max-width: 92%;
+    max-height: 92%;
+    border-radius: 14px;
+    object-fit: contain;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.overlay-expandida audio {
+    width: 60%;
+    max-width: 500px;
+}
+
+.btn-fechar-expandida {
+    position: absolute;
+    top: 24px;
+    right: 30px;
+    background: linear-gradient(90deg, #009170, #5cd495);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 4100;
+    transition: background 0.25s ease;
+}
+
+.btn-fechar-expandida:hover {
+    background: linear-gradient(90deg, #007b5e, #44c47f);
+}
+
+.acoes-detalhes {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.btn-curtir {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-curtir img {
+    width: 28px;
+    height: 28px;
+}
+
+.btn-curtir:hover {
+    transform: scale(1.2);
+}
+
+.btn-curtir.ativo img {
+    filter: drop-shadow(0 0 6px #5cd495);
+}
+
+.comentarios {
+    margin-top: 1.8rem;
+}
+
+.comentarios h4 {
+    font-size: 1.2rem;
+    color: #009170;
+    margin-bottom: 0.8rem;
+}
+
+.comentario {
+    background: #f5fef8;
+    border-left: 4px solid #009170;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.6rem;
+}
+
+.comentario small {
+    color: #666;
+}
+
+.novo-comentario textarea {
+    width: 100%;
+    height: 80px;
+    resize: none;
+    margin-top: 0.5rem;
+    border-radius: 8px;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    transition: border-color 0.2s;
+}
+
+.novo-comentario textarea:focus {
+    outline: none;
+    border-color: #009170;
+}
+
+.novo-comentario button {
+    margin-top: 0.5rem;
+    background: linear-gradient(90deg, #009170, #5cd495);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.novo-comentario button:hover {
+    background: linear-gradient(90deg, #007b5e, #44c47f);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(25px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
