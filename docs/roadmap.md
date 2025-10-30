@@ -33,7 +33,7 @@
 | 🔒 Proteção de rotas via token | ✅ | Redireciona se token expirado ou inválido. |
 | 📥 Barra de progresso no upload | ✅ | Mostrar andamento de upload (axios progress). |
 | 💬 Alertas personalizados | ⬜ | Substituir `alert()` por `react-toastify` ou `SweetAlert2`. |
-| 🖼️ Modal de visualização | ⬜ | Ver detalhes da história e mídias em popup. |
+| 🖼️ Modal de visualização | ✅ | Ver detalhes da história e mídias em popup. |
 | 🎧 Galeria pública | ✅ | Exibir histórias aprovadas com mídia no site público. |
 
 ---
