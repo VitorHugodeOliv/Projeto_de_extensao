@@ -16,6 +16,7 @@ interface Historia {
   titulo: string;
   subtitulo: string;
   autor_artista?: string;
+  categoria_nome?: string;
   status?: string;
   data_criacao: string;
   arquivos?: Arquivo[];
@@ -23,39 +24,33 @@ interface Historia {
 
 function getCapaImagem(arquivos?: Arquivo[]): string {
   if (!arquivos || arquivos.length === 0) return "/imagens/placeholder.jpg";
-
   const capa = arquivos.find(
     (a) =>
       a.tipo.toLowerCase().startsWith("image") ||
       ["png", "jpg", "jpeg", "gif"].includes(a.tipo.toLowerCase())
   );
-
   if (!capa) return "/imagens/placeholder.jpg";
 
   const API_BASE = "http://localhost:5000";
   let url = capa.url.trim();
   if (!url.startsWith("/")) url = "/" + url;
   if (!url.startsWith("/uploads")) url = "/uploads" + url;
-
-  const cleanUrl = `${API_BASE}${url}`.replace(/([^:]\/)\/+/g, "$1");
-  return cleanUrl;
+  return `${API_BASE}${url}`.replace(/([^:]\/)\/+/g, "$1");
 }
 
 const PublicPage: React.FC = () => {
   const [historias, setHistorias] = useState<Historia[]>([]);
   const [comentariosCount, setComentariosCount] = useState<Record<number, number>>({});
+  const [curtidasCount, setCurtidasCount] = useState<Record<number, number>>({});
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
+  const [filtro, setFiltro] = useState("recentes");
+  const [categoriaFiltro, setCategoriaFiltro] = useState("todas");
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  const {
-    curtido,
-    mensagem,
-    setMensagem,
-    handleCurtir,
-    setCurtido,
-  } = useInteracoesHistoria(undefined, token);
+  const { curtido, handleCurtir, setCurtido } = useInteracoesHistoria(undefined, token);
 
   useEffect(() => {
     const fetchHistorias = async () => {
@@ -63,6 +58,7 @@ const PublicPage: React.FC = () => {
         const res = await api.get<Historia[]>("/historias");
         const aprovadas = res.data.filter((h) => h.status === "Aprovada");
         setHistorias(aprovadas);
+        console.log(aprovadas)
 
         const mapaCurtido: Record<number, boolean> = {};
         const mapaCurtidas: Record<number, number> = {};
@@ -75,14 +71,14 @@ const PublicPage: React.FC = () => {
             const data = await response.json();
             mapaCurtido[h.id] = data.usuario_curtiu || false;
             mapaCurtidas[h.id] = data.total_curtidas || 0;
-          } catch (err) {
-            console.error(`Erro ao buscar curtidas da história ${h.id}:`, err);
+          } catch {
             mapaCurtido[h.id] = false;
             mapaCurtidas[h.id] = 0;
           }
         }
 
         setCurtido(mapaCurtido);
+        setCurtidasCount(mapaCurtidas);
 
         for (const h of aprovadas) {
           const listaComentarios = await getComentarios(h.id);
@@ -102,25 +98,66 @@ const PublicPage: React.FC = () => {
     fetchHistorias();
   }, [token, setCurtido]);
 
+  const historiasFiltradas = historias
+    .filter((h) => categoriaFiltro === "todas" || h.categoria_nome === categoriaFiltro)
+    .sort((a, b) => {
+      if (filtro === "recentes") {
+        return new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime();
+      } else if (filtro === "curtidas") {
+        return (curtidasCount[b.id] || 0) - (curtidasCount[a.id] || 0);
+      }
+      return 0;
+    });
+
+  const destaques = [...historias].sort(
+    (a, b) => (curtidasCount[b.id] || 0) - (curtidasCount[a.id] || 0)
+  ).slice(0, 3);
+
   if (carregando) return <p className="mensagem-status">Carregando histórias...</p>;
   if (erro) return <p className="mensagem-status erro">{erro}</p>;
 
   return (
     <div className="public-page">
-      <h1 className="titulo-principal">Histórias Culturais</h1>
-
-      {mensagem && (
-        <div className="alerta-login">
-          {mensagem}
-          <button onClick={() => setMensagem(null)}>Fechar</button>
+      <h1 className="titulo-principal">Galeria Cultural</h1>
+      {destaques.length > 0 && (
+        <div className="destaques-section">
+          <h2>✨ Destaques Culturais</h2>
+          <div className="destaques-grid">
+            {destaques.map((historia) => (
+              <div
+                key={historia.id}
+                className="destaque-card"
+                onClick={() => navigate(`/historia/${historia.id}`)}
+              >
+                <img src={getCapaImagem(historia.arquivos)} alt={historia.titulo} />
+                <div className="overlay">
+                  <h3>{historia.titulo}</h3>
+                  <p>❤️ {curtidasCount[historia.id] || 0} curtidas</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
+      <div className="filtros-container">
+        <select value={filtro} onChange={(e) => setFiltro(e.target.value)}>
+          <option value="recentes">Mais recentes</option>
+          <option value="curtidas">Mais curtidas</option>
+        </select>
 
-      {historias.length === 0 ? (
-        <p className="mensagem-status">Nenhuma história aprovada disponível.</p>
+        <select value={categoriaFiltro} onChange={(e) => setCategoriaFiltro(e.target.value)}>
+          <option value="todas">Todas as categorias</option>
+          <option value="Teatro">Teatro</option>
+          <option value="Dança">Dança</option>
+          <option value="Audiovisual">Audiovisual</option>
+        </select>
+      </div>
+
+      {historiasFiltradas.length === 0 ? (
+        <p className="mensagem-status">Nenhuma história encontrada.</p>
       ) : (
-        <div className="historias-grid">
-          {historias.map((historia) => {
+        <div key={`${filtro}-${categoriaFiltro}`} className="historias-grid">
+          {historiasFiltradas.map((historia) => {
             const capa = getCapaImagem(historia.arquivos);
             const jaCurtiu = curtido[historia.id] ?? false;
 
@@ -130,23 +167,13 @@ const PublicPage: React.FC = () => {
                   className="historia-click-area"
                   onClick={() => navigate(`/historia/${historia.id}`)}
                 >
-                  <div className="imagem-container">
-                    <img
-                      src={capa}
-                      alt={historia.titulo}
-                      className="historia-imagem"
-                    />
-                  </div>
+                  <img src={capa} alt={historia.titulo} className="historia-imagem" />
                   <div className="historia-conteudo">
-                    <h2 className="historia-titulo">{historia.titulo}</h2>
-                    <p className="historia-subtitulo">{historia.subtitulo}</p>
-                    <small className="historia-info">
+                    <h2>{historia.titulo}</h2>
+                    <p>{historia.subtitulo}</p>
+                    <small>
                       Por <strong>{historia.autor_artista || "Autor desconhecido"}</strong> —{" "}
-                      {new Date(historia.data_criacao).toLocaleDateString("pt-BR", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                      })}
+                      {new Date(historia.data_criacao).toLocaleDateString("pt-BR")}
                     </small>
                   </div>
                 </div>

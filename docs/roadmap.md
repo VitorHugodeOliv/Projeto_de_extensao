@@ -19,7 +19,7 @@
 |--------|:------:|-----------|
 | 🧾 LogsAdmin com ON DELETE SET NULL | ✅ | Mantém histórico após exclusão de histórias. |
 | 👁️ Visualização de logs no painel admin | ⬜ | Criar rota `/admin/logs` e listagem no front. |
-| 🗃️ Paginação e filtros no painel admin | ⬜ | Filtro por “Em análise”, “Aprovadas”, “Rejeitadas”. |
+| 🗃️ Paginação e filtros no painel admin | ✅ | Filtro por “Em análise”, “Aprovadas”, “Rejeitadas”. |
 | 📝 Motivo da rejeição | ⬜ | Admin pode adicionar comentário explicando a decisão. |
 | 📊 Painel estatístico | ⬜ | Gráficos com contagem de histórias por categoria/status. |
 
@@ -29,12 +29,12 @@
 
 | Tarefa | Status | Descrição |
 |--------|:------:|-----------|
-| 🧭 Menu dinâmico por tipo de usuário | ⬜ | Mostrar/ocultar rotas conforme tipo (`admin`, `comum`). |
+| 🧭 Menu dinâmico por tipo de usuário | ✅ | Mostrar/ocultar rotas conforme tipo (`admin`, `comum`). |
 | 🔒 Proteção de rotas via token | ✅ | Redireciona se token expirado ou inválido. |
-| 📥 Barra de progresso no upload | ⬜ | Mostrar andamento de upload (axios progress). |
+| 📥 Barra de progresso no upload | ✅ | Mostrar andamento de upload (axios progress). |
 | 💬 Alertas personalizados | ⬜ | Substituir `alert()` por `react-toastify` ou `SweetAlert2`. |
 | 🖼️ Modal de visualização | ⬜ | Ver detalhes da história e mídias em popup. |
-| 🎧 Galeria pública | ⬜ | Exibir histórias aprovadas com mídia no site público. |
+| 🎧 Galeria pública | ✅ | Exibir histórias aprovadas com mídia no site público. |
 
 ---
 
