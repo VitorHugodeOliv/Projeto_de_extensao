@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import api from "../../apis/apiAxios";
+import { jwtDecode } from "jwt-decode";
 import "../css/cssNavbar.css";
 
 interface Usuario {
@@ -9,10 +9,17 @@ interface Usuario {
   tipo_usuario: string;
 }
 
+interface DecodedToken {
+  id: number;
+  nome: string;
+  tipo_usuario: string;
+  exp: number;
+}
+
 const Navbar: React.FC = () => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [mensagem, setMensagem] = useState("");
   const [menuAberto, setMenuAberto] = useState(false);
+  const [mensagem, setMensagem] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,22 +33,30 @@ const Navbar: React.FC = () => {
       return;
     }
 
-    const fetchPerfil = async () => {
-      try {
-        const res = await api.get("http://localhost:5000/perfil", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsuario(res.data);
-      } catch (err: unknown) {
-        console.error(err);
-        setMensagem("Erro ao carregar perfil.");
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const agora = Date.now() / 1000;
+      if (decoded.exp < agora) {
+        localStorage.removeItem("token");
+        setUsuario(null);
+        setMensagem("Sessão expirada. Faça login novamente.");
+        return;
       }
-    };
-    fetchPerfil();
+
+      setUsuario({
+        id: decoded.id,
+        nome: decoded.nome,
+        tipo_usuario: decoded.tipo_usuario,
+      });
+    } catch (err) {
+      console.error("Erro ao decodificar token:", err);
+      setUsuario(null);
+    }
   }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
     setUsuario(null);
     navigate("/login");
   };
@@ -58,9 +73,14 @@ const Navbar: React.FC = () => {
           {usuario?.tipo_usuario === "admin" && (
             <li><Link to="/admin" onClick={toggleMenu}>Admin</Link></li>
           )}
-
           {usuario ? (
-            <li onClick={() => { handleLogout(); toggleMenu(); }} className="logout">
+            <li
+              onClick={() => {
+                handleLogout();
+                toggleMenu();
+              }}
+              className="logout"
+            >
               Sair ({usuario.nome})
             </li>
           ) : (
@@ -71,7 +91,6 @@ const Navbar: React.FC = () => {
           )}
         </ul>
       </div>
-
       <nav className="navbar">
         <div className="navbar-logo" onClick={() => navigate("/")}>
           Arquivo Cultural
@@ -80,11 +99,9 @@ const Navbar: React.FC = () => {
         <ul className="navbar-links">
           <li><Link to="/historias">Histórias</Link></li>
           <li><Link to="/enviar-historia">Enviar</Link></li>
-
           {usuario?.tipo_usuario === "admin" && (
             <li><Link to="/admin">Admin</Link></li>
           )}
-
           {usuario ? (
             <li className="logout" onClick={handleLogout}>
               Sair ({usuario.nome})
@@ -96,6 +113,7 @@ const Navbar: React.FC = () => {
             </>
           )}
         </ul>
+
         <div
           className={`ham-menu ${menuAberto ? "active" : ""}`}
           onClick={toggleMenu}

@@ -11,6 +11,7 @@ import RotaPublicPage from "./routes/RotaPublicPage";
 import RotaHeader from "./routes/RotaHeader"
 import RotaAdminCard from "./routes/RotaAdminCard"
 import HistoryDetails from "./components/HistoryDetails";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App: React.FC = () => {
 
@@ -20,13 +21,38 @@ const App: React.FC = () => {
       <Route path='/' element={<RotaHeader />}>
         <Route path="/historias" element={<RotaPublicPage/>}/>
         <Route path="/historia/:id" element={<HistoryDetails />} />
-        <Route path="/login" element={<RotaLogin/>}/>
         <Route path="/registro" element={<RotaRegistro/>}/>
-        <Route path="/dashboard" element={ <RotaDashboard/>}/>
-        <Route path="/perfil" element={ <RotaPerfil/>}/>
-        <Route path="/enviar-historia" element={ <RotaHistoryRegister/>}/>
-        <Route path="/admin" element={ <RotaAdminPanel/>}/>
-        <Route path="/admin-card/:id" element={ <RotaAdminCard/>}/>
+        <Route path="/login" element={ <RotaLogin/>}/>
+        <Route 
+          path="/dashboard" 
+          element={
+          <ProtectedRoute>
+            <RotaDashboard/>
+          </ProtectedRoute>}/>
+        <Route 
+          path="/enviar-historia" 
+          element={ 
+          <ProtectedRoute>
+            <RotaHistoryRegister/>
+          </ProtectedRoute>}/>
+        <Route 
+          path="/perfil"
+          element={ 
+          <ProtectedRoute>
+            <RotaPerfil/>
+          </ProtectedRoute>}/>
+        <Route 
+          path="/admin"
+          element={ 
+          <ProtectedRoute requerAdmin>
+            <RotaAdminPanel/>
+          </ProtectedRoute>}/>
+        <Route
+          path="/admin-card/:id"
+          element={ 
+          <ProtectedRoute requerAdmin>
+            <RotaAdminCard/>
+          </ProtectedRoute>}/>
       </Route>    
     </Routes>
   );
