@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "../css/cssNavbar.css";
+import { apiAuth } from "../../apis/api";
 
 interface Usuario {
   id: number;
@@ -36,6 +37,7 @@ const Navbar: React.FC = () => {
     try {
       const decoded: DecodedToken = jwtDecode(token);
       const agora = Date.now() / 1000;
+
       if (decoded.exp < agora) {
         localStorage.removeItem("token");
         setUsuario(null);
@@ -43,11 +45,22 @@ const Navbar: React.FC = () => {
         return;
       }
 
-      setUsuario({
-        id: decoded.id,
-        nome: decoded.nome,
-        tipo_usuario: decoded.tipo_usuario,
-      });
+      apiAuth
+        .perfil()
+        .then((dados) => {
+          setUsuario({
+            id: dados.id,
+            nome: dados.nome,
+            tipo_usuario: dados.tipo_usuario,
+          });
+        })
+        .catch(() => {
+          setUsuario({
+            id: decoded.id,
+            nome: decoded.nome,
+            tipo_usuario: decoded.tipo_usuario,
+          });
+        });
     } catch (err) {
       console.error("Erro ao decodificar token:", err);
       setUsuario(null);
@@ -67,12 +80,25 @@ const Navbar: React.FC = () => {
     <>
       <div className={`off-screen ${menuAberto ? "active" : ""}`}>
         <ul>
-          <li><Link to="/historias" onClick={toggleMenu}>Histórias</Link></li>
-          <li><Link to="/enviar-historia" onClick={toggleMenu}>Enviar</Link></li>
+          <li>
+            <Link to="/historias" onClick={toggleMenu}>
+              Histórias
+            </Link>
+          </li>
+          <li>
+            <Link to="/enviar-historia" onClick={toggleMenu}>
+              Enviar
+            </Link>
+          </li>
 
           {usuario?.tipo_usuario === "admin" && (
-            <li><Link to="/admin" onClick={toggleMenu}>Admin</Link></li>
+            <li>
+              <Link to="/admin" onClick={toggleMenu}>
+                Admin
+              </Link>
+            </li>
           )}
+
           {usuario ? (
             <li
               onClick={() => {
@@ -85,31 +111,52 @@ const Navbar: React.FC = () => {
             </li>
           ) : (
             <>
-              <li><Link to="/login" onClick={toggleMenu}>Entrar</Link></li>
-              <li><Link to="/registro" onClick={toggleMenu}>Registrar</Link></li>
+              <li>
+                <Link to="/login" onClick={toggleMenu}>
+                  Entrar
+                </Link>
+              </li>
+              <li>
+                <Link to="/registro" onClick={toggleMenu}>
+                  Registrar
+                </Link>
+              </li>
             </>
           )}
         </ul>
       </div>
+
       <nav className="navbar">
         <div className="navbar-logo" onClick={() => navigate("/")}>
           Arquivo Cultural
         </div>
 
         <ul className="navbar-links">
-          <li><Link to="/historias">Histórias</Link></li>
-          <li><Link to="/enviar-historia">Enviar</Link></li>
+          <li>
+            <Link to="/historias">Histórias</Link>
+          </li>
+          <li>
+            <Link to="/enviar-historia">Enviar</Link>
+          </li>
+
           {usuario?.tipo_usuario === "admin" && (
-            <li><Link to="/admin">Admin</Link></li>
+            <li>
+              <Link to="/admin">Admin</Link>
+            </li>
           )}
+
           {usuario ? (
             <li className="logout" onClick={handleLogout}>
               Sair ({usuario.nome})
             </li>
           ) : (
             <>
-              <li><Link to="/login">Entrar</Link></li>
-              <li><Link to="/registro">Registrar</Link></li>
+              <li>
+                <Link to="/login">Entrar</Link>
+              </li>
+              <li>
+                <Link to="/registro">Registrar</Link>
+              </li>
             </>
           )}
         </ul>

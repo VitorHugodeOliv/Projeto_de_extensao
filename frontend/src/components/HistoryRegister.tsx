@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import api from "../apis/apiAxios";
-import PreviewMidias from "../utils/PreviewMidias";
 import { useNavigate } from "react-router";
-import { validarArquivos } from "../utils/validarArquivos";
 import { toast } from "react-toastify";
+import PreviewMidias from "../utils/PreviewMidias";
+import { validarArquivos } from "../utils/validarArquivos";
+import { apiHistorias } from "../apis/api";
+import api from "../apis/apiAxios";
 import "./css/cssHistoryRegister.css";
 
 interface Props {
@@ -43,7 +44,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await api.get("http://localhost:5000/categorias");
+        const res = await api.get("/categorias");
         setCategorias(res.data);
       } catch (err) {
         console.error("Erro ao buscar categorias:", err);
@@ -91,62 +92,36 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
       toast.warning("O campo 'Título' é obrigatório!");
       return;
     }
-
     if (!categoriaId) {
       toast.warning("Selecione uma categoria antes de enviar!");
       return;
     }
-
     if (conteudo.trim().length < 20) {
       toast.warning("O campo 'Conteúdo' deve ter no mínimo 20 caracteres.");
       return;
     }
-
     if (!midias || midias.length === 0) {
       toast.warning("Envie pelo menos uma mídia (imagem, vídeo ou áudio).");
       return;
     }
 
     try {
-      const historiaRes = await api.post(
-        "http://localhost:5000/historias",
-        {
-          titulo,
-          subtitulo,
-          autor_artista: autorArtista || null,
-          categoria_id: categoriaId,
-          status,
-          conteudo: conteudo || null,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const historiaRes = await apiHistorias.criar({
+        titulo,
+        subtitulo,
+        autor_artista: autorArtista || null,
+        categoria_id: categoriaId,
+        status,
+        conteudo: conteudo || null,
+      });
 
-      const historiaId = historiaRes.data.id;
+      const historiaId = historiaRes.id;
 
       if (midias && midias.length > 0) {
-        const formData = new FormData();
-        for (let i = 0; i < midias.length; i++) {
-          formData.append("arquivos", midias[i]);
-        }
-        formData.append("historia_id", historiaId);
-
         setIsUploading(true);
         setUploadProgress(0);
 
-        await api.post("http://localhost:5000/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent.total) {
-              const percent = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setUploadProgress(percent);
-            }
-          },
-        });
+        await apiHistorias.uploadMidias(historiaId, midias);
 
         setIsUploading(false);
         setUploadProgress(100);

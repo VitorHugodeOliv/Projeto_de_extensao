@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../apis/apiAxios";
+import { apiAdmin } from "../apis/api";
 import "./css/cssAdminPanel.css";
 
 interface Arquivo {
@@ -35,7 +35,7 @@ type Filtro =
   | "mais-recentes"
   | "mais-antigas";
 
-const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
+const AdminPanel: React.FC<Props> = ({ setToken }) => {
   const [historias, setHistorias] = useState<Historia[]>([]);
   const [historiasFiltradas, setHistoriasFiltradas] = useState<Historia[]>([]);
   const [filtroAtivo, setFiltroAtivo] = useState<Filtro>("em-analise");
@@ -44,10 +44,8 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
 
   const carregarHistorias = async () => {
     try {
-      const res = await api.get("http://localhost:5000/admin/solicitacoes", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const todas = res.data.historias || [];
+      const res = await apiAdmin.listarSolicitacoes();
+      const todas = res.historias || [];
       setHistorias(todas);
       aplicarFiltro(filtroAtivo, todas);
       setMensagem("");
@@ -61,6 +59,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
     carregarHistorias();
   }, []);
 
+  // 🧮 Filtro de histórias
   const aplicarFiltro = (filtro: Filtro, base?: Historia[]) => {
     const lista = base || historias;
     let filtradas: Historia[] = [];
@@ -75,14 +74,10 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
         );
         break;
       case "aprovadas":
-        filtradas = lista.filter(
-          (h) => h.status.toLowerCase() === "aprovada"
-        );
+        filtradas = lista.filter((h) => h.status.toLowerCase() === "aprovada");
         break;
       case "rejeitadas":
-        filtradas = lista.filter(
-          (h) => h.status.toLowerCase() === "rejeitada"
-        );
+        filtradas = lista.filter((h) => h.status.toLowerCase() === "rejeitada");
         break;
       case "mais-recentes":
         filtradas = [...lista].sort(
@@ -104,6 +99,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
     setHistoriasFiltradas(filtradas);
   };
 
+  // 🚪 Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
@@ -182,9 +178,7 @@ const AdminPanel: React.FC<Props> = ({ token, setToken }) => {
                 <div
                   key={h.id}
                   className="admin-card"
-                  onClick={() =>
-                    (window.location.href = `/admin-card/${h.id}`)
-                  }
+                  onClick={() => (window.location.href = `/admin-card/${h.id}`)}
                 >
                   {imagemPreview ? (
                     <img

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import api from "../apis/apiAxios";
+import { apiAdmin } from "../apis/api";
+import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./css/cssAdminCard.css";
 
@@ -24,81 +25,79 @@ interface Historia {
   arquivos: Arquivo[];
 }
 
-interface Props {
-  token: string;
-}
-
-const AdminCard: React.FC<Props> = ({ token }) => {
+const AdminCard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [historia, setHistoria] = useState<Historia | null>(null);
-  const [mensagem, setMensagem] = useState("");
-  const [tipoMensagem, setTipoMensagem] = useState<"success" | "danger" | "">("");
+  const [carregando, setCarregando] = useState(true);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [motivo, setMotivo] = useState("");
 
   useEffect(() => {
     const carregarHistoria = async () => {
       try {
-        const res = await api.get("http://localhost:5000/admin/solicitacoes", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        const encontrada = res.data.historias.find(
+        const res = await apiAdmin.listarSolicitacoes();
+        const encontrada = res.historias.find(
           (h: Historia) => h.id === Number(id)
         );
-        setHistoria(encontrada || null);
+        if (!encontrada) {
+          toast.warning("História não encontrada ⚠️");
+          navigate("/admin");
+          return;
+        }
+        setHistoria(encontrada);
       } catch (err) {
-        console.error(err);
-        setTipoMensagem("danger");
-        setMensagem("Erro ao carregar os detalhes da história.");
+        console.error("Erro ao carregar história:", err);
+        toast.error("Erro ao carregar os detalhes da história 😢");
+      } finally {
+        setCarregando(false);
       }
     };
-
     carregarHistoria();
-  }, [id, token]);
-
-  const exibirMensagem = (texto: string, tipo: "success" | "danger") => {
-    setMensagem(texto);
-    setTipoMensagem(tipo);
-
-    setTimeout(() => {
-      setMensagem("");
-      setTipoMensagem("");
-    }, 3000);
-  };
+  }, [id, navigate]);
 
   const aprovarHistoria = async () => {
+    if (!historia?.id) return;
     try {
-      await api.patch(
-        "http://localhost:5000/admin/solicitacoes/aprovar",
-        { historia_id: historia?.id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      exibirMensagem("História aprovada com sucesso!", "success");
+      await apiAdmin.aprovarHistoria(historia.id);
+      toast.success("História aprovada com sucesso! 🎉");
       setTimeout(() => navigate("/admin"), 1500);
     } catch (err) {
       console.error(err);
-      exibirMensagem("Erro ao aprovar a história.", "danger");
+      toast.error("Erro ao aprovar a história 😕");
     }
   };
 
-  const rejeitarHistoria = async () => {
+  const confirmarRejeicao = async () => {
+    if (!historia?.id) return;
+    if (!motivo.trim()) {
+      toast.warning("Informe um motivo antes de rejeitar.");
+      return;
+    }
+
     try {
-      await api.delete("http://localhost:5000/admin/solicitacoes/rejeitar", {
-        headers: { Authorization: `Bearer ${token}` },
-        data: { historia_id: historia?.id },
-      });
-      exibirMensagem("História rejeitada e removida com sucesso!", "success");
+      await apiAdmin.rejeitarHistoria(historia.id, motivo);
+      toast.info("História rejeitada com sucesso.");
+      setMostrarModal(false);
+      setMotivo("");
       setTimeout(() => navigate("/admin"), 1500);
     } catch (err) {
       console.error(err);
-      exibirMensagem("Erro ao rejeitar a história.", "danger");
+      toast.error("Erro ao rejeitar a história 😢");
     }
   };
+
+  if (carregando)
+    return (
+      <div className="admin-card-page">
+        <p className="loading-text">Carregando história...</p>
+      </div>
+    );
 
   if (!historia)
     return (
       <div className="admin-card-page">
-        <p className="loading-text">Carregando história...</p>
+        <p className="loading-text">História não encontrada.</p>
       </div>
     );
 
@@ -137,13 +136,6 @@ const AdminCard: React.FC<Props> = ({ token }) => {
           <strong>Data de Envio:</strong>{" "}
           {new Date(historia.data_criacao).toLocaleString("pt-BR")}
         </p>
-        <span
-          className={`status-badge ${historia.status
-            .replace(" ", "-")
-            .toLowerCase()}`}
-        >
-          {historia.status}
-        </span>
 
         <div className="conteudo">
           <p>{historia.conteudo || "Nenhum conteúdo textual fornecido."}</p>
@@ -152,10 +144,7 @@ const AdminCard: React.FC<Props> = ({ token }) => {
         <div className="midia-container">
           {imagens.map((img) => (
             <div key={img.id} className="midia-item">
-              <img
-                src={`http://localhost:5000/${img.caminho}`}
-                alt={img.nome}
-              />
+              <img src={`http://localhost:5000/${img.caminho}`} alt={img.nome} />
               <p>📷 {img.nome}</p>
             </div>
           ))}
@@ -185,26 +174,38 @@ const AdminCard: React.FC<Props> = ({ token }) => {
           ))}
         </div>
 
-        <div className="botoes-acoes">
-          {historia.status === "Em análise" && (
-            <>
-              <button className="btn-aprovar" onClick={aprovarHistoria}>
-                ✅ Aprovar
-              </button>
-              <button className="btn-rejeitar" onClick={rejeitarHistoria}>
-                ❌ Rejeitar
-              </button>
-            </>
-          )}
-        </div>
+        {historia.status === "Em análise" && (
+          <div className="botoes-acoes">
+            <button className="btn-aprovar" onClick={aprovarHistoria}>
+              ✅ Aprovar
+            </button>
+            <button
+              className="btn-rejeitar"
+              onClick={() => setMostrarModal(true)}
+            >
+              ❌ Rejeitar
+            </button>
+          </div>
+        )}
       </div>
-
-      {mensagem && (
-        <div
-          className={`alert alert-${tipoMensagem} alert-dismissible fade show bootstrap-alert`}
-          role="alert"
-        >
-          {mensagem}
+      {mostrarModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h4>Motivo da Rejeição</h4>
+            <textarea
+              placeholder="Descreva brevemente o motivo..."
+              value={motivo}
+              onChange={(e) => setMotivo(e.target.value)}
+            />
+            <div className="modal-buttons">
+              <button className="btn-cancelar" onClick={() => setMostrarModal(false)}>
+                Cancelar
+              </button>
+              <button className="btn-confirmar" onClick={confirmarRejeicao}>
+                Confirmar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

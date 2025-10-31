@@ -89,6 +89,5 @@
 
 1. **Implementar o campo “motivo da rejeição”** no backend e frontend.  
 2. Criar rota `/admin/logs` e visualização de histórico no painel.  
-3. Adicionar **barra de progresso de upload** no front (melhora UX).  
-4. Adotar **Context API** pra gerenciar o token globalmente.  
-5. Iniciar setup de **Docker Compose** pra rodar tudo com 1 comando.  
+3. Adotar **Context API** pra gerenciar o token globalmente.  
+4. Iniciar setup de **Docker Compose** pra rodar tudo com 1 comando.  
