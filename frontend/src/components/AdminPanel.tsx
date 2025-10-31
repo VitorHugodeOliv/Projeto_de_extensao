@@ -59,7 +59,6 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
     carregarHistorias();
   }, []);
 
-  // 🧮 Filtro de histórias
   const aplicarFiltro = (filtro: Filtro, base?: Historia[]) => {
     const lista = base || historias;
     let filtradas: Historia[] = [];
@@ -99,7 +98,6 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
     setHistoriasFiltradas(filtradas);
   };
 
-  // 🚪 Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);

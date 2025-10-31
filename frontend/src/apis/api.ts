@@ -65,14 +65,19 @@ export const apiAdmin = {
     return res.data;
   },
 
-  aprovarHistoria: async (id: number) => {
-    const res = await api.patch(`/admin/solicitacoes/${id}`, { status: "Aprovada" });
+  aprovarHistoria: async (historiaId: number) => {
+    const res = await api.patch("/admin/solicitacoes/aprovar", {
+      historia_id: historiaId,
+    });
     return res.data;
   },
 
-  rejeitarHistoria: async (id: number, motivo: string) => {
-    const res = await api.delete(`/admin/solicitacoes/${id}`, {
-      data: { motivo },
+  rejeitarHistoria: async (historiaId: number, motivo?: string) => {
+    const res = await api.delete("/admin/solicitacoes/rejeitar", {
+      data: {
+        historia_id: historiaId,
+        motivo: motivo || "Rejeição sem motivo informado",
+      },
     });
     return res.data;
   },

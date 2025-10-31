@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import api from "../apis/apiAxios"
-import "./css/cssRegister.css"
+import api from "../apis/apiAxios";
+import { toast } from "react-toastify";
+import "./css/cssRegister.css";
 
 interface Props {
   setToken: (token: string | null) => void;
@@ -12,28 +13,26 @@ const Register: React.FC<Props> = ({ setToken }) => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [endereco, setEndereco] = useState("");
-  const [idade, setIdade] = useState<number | "">("")
+  const [idade, setIdade] = useState<number | "">("");
   const [apelido, setApelido] = useState("");
   const [areaArtistica, setAreaArtistica] = useState("");
-  const [mensagem, setMensagem] = useState("");
-  const [isErro, setIsErro] = useState(false);
 
   const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!nome || !email || !senha) {
-    setMensagem("Preencha todos os campos obrigatórios (nome, email e senha).");
-    return;
+      toast.warning("⚠️ Preencha todos os campos obrigatórios (nome, email e senha).");
+      return;
     }
 
     if (!emailRegex.test(email)) {
-    setMensagem("Digite um email válido!");
-    return;
+      toast.warning("📧 Digite um email válido!");
+      return;
     }
 
     if (idade && idade < 0) {
-    setMensagem("A idade não pode ser negativa!");
-    return;
+      toast.warning("🚫 A idade não pode ser negativa!");
+      return;
     }
 
     try {
@@ -42,30 +41,35 @@ const Register: React.FC<Props> = ({ setToken }) => {
         email,
         senha,
         endereco,
-        idade: idade === '' ? null : idade,
+        idade: idade === "" ? null : idade,
         apelido,
-        area_artistica: areaArtistica
+        area_artistica: areaArtistica,
       });
 
-      setMensagem(res.data.message);
-      setIsErro(false);
-
+      toast.success("🎉 Cadastro realizado com sucesso!");
       const accessToken = res.data.access_token;
       const refreshToken = res.data.refresh_token;
-      
 
       if (accessToken) {
         localStorage.setItem("token", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
         setToken(accessToken);
       }
+
+      setNome("");
+      setEmail("");
+      setSenha("");
+      setEndereco("");
+      setIdade("");
+      setApelido("");
+      setAreaArtistica("");
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
-        setMensagem(err.response.data.message);
+        const msg = err.response.data.message || "Erro ao registrar usuário.";
+        toast.error(`❌ ${msg}`);
       } else {
-        setMensagem("Erro desconhecido");
+        toast.error("😢 Erro de conexão com o servidor.");
       }
-      setIsErro(true);
     }
   };
 
@@ -91,7 +95,6 @@ const Register: React.FC<Props> = ({ setToken }) => {
         value={senha}
         onChange={(e) => setSenha(e.target.value)}
       />
-
       <input
         type="text"
         placeholder="Endereço"
@@ -102,7 +105,9 @@ const Register: React.FC<Props> = ({ setToken }) => {
         type="number"
         placeholder="Idade"
         value={idade}
-        onChange={(e) => setIdade(e.target.value === "" ? "" : Number(e.target.value))}
+        onChange={(e) =>
+          setIdade(e.target.value === "" ? "" : Number(e.target.value))
+        }
       />
       <input
         type="text"
@@ -118,14 +123,6 @@ const Register: React.FC<Props> = ({ setToken }) => {
       />
 
       <button onClick={handleRegister}>Cadastrar</button>
-      {mensagem && (
-        <p
-          className={`show ${isErro ? "erro" : "sucesso"}`}
-        >
-          {isErro ? "✔️ " : "⚠️ "}
-          {mensagem}
-        </p>
-      )}
     </div>
   );
 };

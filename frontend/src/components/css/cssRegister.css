@@ -15,40 +15,6 @@
   font-size: 1.8rem;
 }
 
-.register-container p {
-  text-align: center;
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 0.6rem;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.register-container p.sucesso {
-  color: #c00;
-  background-color: #e5ffe5;
-  border: 1px solid #c00;
-  box-shadow: 0 0 6px rgba(200, 0, 0, 0.3);
-}
-
-.register-container p.erro {
-  color: rgb(29, 141, 6);
-  background-color: #ffe5e5;
-  border: 1px solid rgb(0, 204, 10);
-  box-shadow: 0 0 6px rgba(135, 206, 3, 0.3);
-}
-
-.register-container p {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.register-container p.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .register-container input {
   width: 100%;
   display: block;
