@@ -202,6 +202,25 @@
   transform: scale(1.05);
 }
 
+.motivo-rejeicao {
+  background-color: #ffe8e8;
+  border: 1px solid #ffbaba;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.motivo-rejeicao h5 {
+  color: #b00020;
+  margin-bottom: 0.5rem;
+}
+
+.motivo-rejeicao p {
+  margin: 0;
+  color: #333;
+  font-style: italic;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;

@@ -48,6 +48,7 @@ try:
             subtitulo VARCHAR(255),
             proponente INT NOT NULL,
             autor_artista VARCHAR(255),
+            motivo_rejeicao TEXT NULL
             data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             categoria_id INT,
             status VARCHAR(50),

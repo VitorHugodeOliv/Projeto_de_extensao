@@ -73,12 +73,10 @@ export const apiAdmin = {
   },
 
   rejeitarHistoria: async (historiaId: number, motivo?: string) => {
-    const res = await api.delete("/admin/solicitacoes/rejeitar", {
-      data: {
-        historia_id: historiaId,
-        motivo: motivo || "Rejeição sem motivo informado",
-      },
-    });
-    return res.data;
-  },
+  const res = await api.patch("/admin/solicitacoes/rejeitar", {
+    historia_id: historiaId,
+    motivo: motivo?.trim() || "Rejeição sem motivo informado",
+  });
+  return res.data;
+},
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { apiAdmin } from "../apis/api";
+import { toast } from "react-toastify";
 import "./css/cssAdminPanel.css";
 
 interface Arquivo {
@@ -49,9 +50,12 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
       setHistorias(todas);
       aplicarFiltro(filtroAtivo, todas);
       setMensagem("");
+
+      toast.success("✅ Histórias carregadas com sucesso!");
     } catch (err) {
       console.error(err);
       setMensagem("Erro ao carregar histórias.");
+      toast.error("⚠️ Erro ao carregar as histórias. Tente novamente.");
     }
   };
 
@@ -96,11 +100,13 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
 
     setFiltroAtivo(filtro);
     setHistoriasFiltradas(filtradas);
+    toast.info(`📂 Filtro aplicado: ${filtro.replace("-", " ")}`);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken(null);
+    toast.info("👋 Sessão encerrada. Até logo!");
   };
 
   return (

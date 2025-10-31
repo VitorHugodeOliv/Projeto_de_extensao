@@ -19,6 +19,7 @@ interface Historia {
   autor_artista: string;
   status: string;
   conteudo: string;
+  motivo_rejeicao: string;
   categoria_nome: string;
   nome_usuario: string;
   data_criacao: string;
@@ -70,6 +71,9 @@ const AdminCard: React.FC = () => {
 
   const confirmarRejeicao = async () => {
     if (!historia?.id) return;
+    if (!motivo || motivo.trim().length < 5) {
+      toast.error("Informe a rejeição com detalhes")
+    }
     if (!motivo.trim()) {
       toast.warning("Informe um motivo antes de rejeitar.");
       return;
@@ -111,105 +115,115 @@ const AdminCard: React.FC = () => {
     ["mp3", "wav"].includes(a.tipo.toLowerCase())
   );
 
-  return (
-    <div className="admin-card-page">
-      <div className="admin-card-header">
-        <h2>Detalhes da História</h2>
-        <button className="btn-voltar" onClick={() => navigate("/admin")}>
-          ⬅️ Voltar
-        </button>
+return (
+  <div className="admin-card-page">
+    <div className="admin-card-header">
+      <h2>Detalhes da História</h2>
+      <button className="btn-voltar" onClick={() => navigate("/admin")}>
+        ⬅️ Voltar
+      </button>
+    </div>
+
+    <div className="admin-card-detalhe">
+      <h3>{historia.titulo}</h3>
+      <p>
+        <strong>Autor/Artista:</strong>{" "}
+        {historia.autor_artista || "Não informado"}
+      </p>
+      <p>
+        <strong>Categoria:</strong> {historia.categoria_nome}
+      </p>
+      <p>
+        <strong>Proponente:</strong> {historia.nome_usuario}
+      </p>
+      <p>
+        <strong>Data de Envio:</strong>{" "}
+        {new Date(historia.data_criacao).toLocaleString("pt-BR")}
+      </p>
+
+      <div className="conteudo">
+        <p>{historia.conteudo || "Nenhum conteúdo textual fornecido."}</p>
+      </div>
+      {historia.status === "Rejeitada" && historia["motivo_rejeicao"] && (
+        <div className="motivo-rejeicao">
+          <h5>🚫 Motivo da Rejeição</h5>
+          <p>{historia["motivo_rejeicao"]}</p>
+        </div>
+      )}
+
+      <div className="midia-container">
+        {imagens.map((img) => (
+          <div key={img.id} className="midia-item">
+            <img src={`http://localhost:5000/${img.caminho}`} alt={img.nome} />
+            <p>📷 {img.nome}</p>
+          </div>
+        ))}
+
+        {videos.map((vid) => (
+          <div key={vid.id} className="midia-item">
+            <video controls>
+              <source
+                src={`http://localhost:5000/${vid.caminho}`}
+                type="video/mp4"
+              />
+            </video>
+            <p>🎥 {vid.nome}</p>
+          </div>
+        ))}
+
+        {audios.map((aud) => (
+          <div key={aud.id} className="midia-item">
+            <audio controls>
+              <source
+                src={`http://localhost:5000/${aud.caminho}`}
+                type="audio/mpeg"
+              />
+            </audio>
+            <p>🎧 {aud.nome}</p>
+          </div>
+        ))}
       </div>
 
-      <div className="admin-card-detalhe">
-        <h3>{historia.titulo}</h3>
-        <p>
-          <strong>Autor/Artista:</strong>{" "}
-          {historia.autor_artista || "Não informado"}
-        </p>
-        <p>
-          <strong>Categoria:</strong> {historia.categoria_nome}
-        </p>
-        <p>
-          <strong>Proponente:</strong> {historia.nome_usuario}
-        </p>
-        <p>
-          <strong>Data de Envio:</strong>{" "}
-          {new Date(historia.data_criacao).toLocaleString("pt-BR")}
-        </p>
-
-        <div className="conteudo">
-          <p>{historia.conteudo || "Nenhum conteúdo textual fornecido."}</p>
-        </div>
-
-        <div className="midia-container">
-          {imagens.map((img) => (
-            <div key={img.id} className="midia-item">
-              <img src={`http://localhost:5000/${img.caminho}`} alt={img.nome} />
-              <p>📷 {img.nome}</p>
-            </div>
-          ))}
-
-          {videos.map((vid) => (
-            <div key={vid.id} className="midia-item">
-              <video controls>
-                <source
-                  src={`http://localhost:5000/${vid.caminho}`}
-                  type="video/mp4"
-                />
-              </video>
-              <p>🎥 {vid.nome}</p>
-            </div>
-          ))}
-
-          {audios.map((aud) => (
-            <div key={aud.id} className="midia-item">
-              <audio controls>
-                <source
-                  src={`http://localhost:5000/${aud.caminho}`}
-                  type="audio/mpeg"
-                />
-              </audio>
-              <p>🎧 {aud.nome}</p>
-            </div>
-          ))}
-        </div>
-
-        {historia.status === "Em análise" && (
-          <div className="botoes-acoes">
-            <button className="btn-aprovar" onClick={aprovarHistoria}>
-              ✅ Aprovar
-            </button>
-            <button
-              className="btn-rejeitar"
-              onClick={() => setMostrarModal(true)}
-            >
-              ❌ Rejeitar
-            </button>
-          </div>
-        )}
-      </div>
-      {mostrarModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h4>Motivo da Rejeição</h4>
-            <textarea
-              placeholder="Descreva brevemente o motivo..."
-              value={motivo}
-              onChange={(e) => setMotivo(e.target.value)}
-            />
-            <div className="modal-buttons">
-              <button className="btn-cancelar" onClick={() => setMostrarModal(false)}>
-                Cancelar
-              </button>
-              <button className="btn-confirmar" onClick={confirmarRejeicao}>
-                Confirmar
-              </button>
-            </div>
-          </div>
+      {historia.status === "Em análise" && (
+        <div className="botoes-acoes">
+          <button className="btn-aprovar" onClick={aprovarHistoria}>
+            ✅ Aprovar
+          </button>
+          <button
+            className="btn-rejeitar"
+            onClick={() => setMostrarModal(true)}
+          >
+            ❌ Rejeitar
+          </button>
         </div>
       )}
     </div>
-  );
+
+    {mostrarModal && (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <h4>Motivo da Rejeição</h4>
+          <textarea
+            placeholder="Descreva brevemente o motivo..."
+            value={motivo}
+            onChange={(e) => setMotivo(e.target.value)}
+          />
+          <div className="modal-buttons">
+            <button
+              className="btn-cancelar"
+              onClick={() => setMostrarModal(false)}
+            >
+              Cancelar
+            </button>
+            <button className="btn-confirmar" onClick={confirmarRejeicao}>
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
 };
 
 export default AdminCard;

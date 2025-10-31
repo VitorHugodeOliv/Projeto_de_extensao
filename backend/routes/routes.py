@@ -18,10 +18,6 @@ SECRET_KEY = settings.SECRET_KEY
 
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "uploads")
 
-# TESTANDO BLUEPRINTS
-# SE FUNCIONAR
-# TROCAR TODAS AS ROTAS PARA ESSE PADRÃO
-
 app.register_blueprint(upload_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)

@@ -42,6 +42,7 @@ def listar_solicitacoes():
             h.autor_artista,
             h.conteudo,
             h.status,
+            h.motivo_rejeicao,
             h.data_criacao,
             c.nome AS categoria_nome,
             u.nome AS nome_usuario,
@@ -70,6 +71,7 @@ def listar_solicitacoes():
                 "autor_artista": row["autor_artista"],
                 "conteudo": row["conteudo"],
                 "status": row["status"],
+                "motivo_rejeicao": row.get("motivo_rejeicao"),
                 "data_criacao": row["data_criacao"],
                 "categoria_nome": row["categoria_nome"],
                 "nome_usuario": row["nome_usuario"],
@@ -132,7 +134,7 @@ def aprovar_solicitacao():
 
     return jsonify({"message": f"História ID {historia_id} aprovada e log registrada."}), 200
 
-@admin_bp.route("/admin/solicitacoes/rejeitar", methods=["DELETE"])
+@admin_bp.route("/admin/solicitacoes/rejeitar", methods=["PATCH"])
 def rejeitar_solicitacao():
     token_header = request.headers.get("Authorization")
 
@@ -145,9 +147,14 @@ def rejeitar_solicitacao():
     if not usuario:
         return jsonify({"message": "Acesso negado: apenas administradores podem acessar esta rota."}), 403
 
-    historia_id = request.args.get("historia_id") or request.json.get("historia_id")
+    data = request.get_json()
+    historia_id = data.get("historia_id")
+    motivo = data.get("motivo")
+
     if not historia_id:
         return jsonify({"message": "ID da história não informado"}), 400
+    if not motivo:
+        return jsonify({"message": "Motivo da rejeição é obrigatório."}), 400
 
     conn = conectar()
     cursor = conn.cursor(dictionary=True)
@@ -159,18 +166,22 @@ def rejeitar_solicitacao():
         conn.close()
         return jsonify({"message": "História não encontrada"}), 404
 
-    cursor.execute("DELETE FROM Arquivos WHERE historia_id = %s", (historia_id,))
-    
+    cursor.execute("""
+        UPDATE Historias 
+        SET status = 'Rejeitada', motivo_rejeicao = %s 
+        WHERE id = %s
+    """, (motivo, historia_id))
+
     cursor.execute("""
         INSERT INTO LogsAdmin (admin_id, historia_id, acao)
         VALUES (%s, %s, %s)
     """, (usuario["id"], historia_id, "Rejeitou"))
 
-    cursor.execute("DELETE FROM Historias WHERE id = %s", (historia_id,))
-
     conn.commit()
     cursor.close()
     conn.close()
 
-    return jsonify({"message": f"História ID {historia_id} rejeitada e log registrada."}), 200
-
+    return jsonify({
+        "message": f"História ID {historia_id} rejeitada com motivo registrado.",
+        "motivo": motivo
+    }), 200
