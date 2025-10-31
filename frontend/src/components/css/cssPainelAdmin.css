@@ -1,0 +1,127 @@
+.painel-admin {
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.painel-admin h2 {
+    color: #009170;
+    margin-bottom: 1rem;
+}
+
+.graficos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.grafico-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.grafico-card h4 {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.cards-totais {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.card-info {
+    flex: 1;
+    min-width: 180px;
+    max-width: 220px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.card-info h4 {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.card-info p {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-info:hover {
+    transform: translateY(-3px);
+}
+
+.card-info.total {
+    border-top: 5px solid #009170;
+}
+
+.card-info.aprovadas {
+    border-top: 5px solid #00c853;
+}
+
+.card-info.rejeitadas {
+    border-top: 5px solid #d32f2f;
+}
+
+.card-info.analise {
+    border-top: 5px solid #ffb300;
+}
+
+.filtro-tempo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.filtro-tempo select {
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    background: #fff;
+    font-size: 0.9rem;
+}
+
+.filtro-tempo select:focus {
+    border-color: #009170;
+}
+
+.grafico-card:last-child {
+    width: 80%;
+    max-width: 800px;
+    margin: 2rem auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grafico-card:last-child .filtro-tempo {
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.grafico-card:last-child h4 {
+    text-align: left;
+    width: 100%;
+}

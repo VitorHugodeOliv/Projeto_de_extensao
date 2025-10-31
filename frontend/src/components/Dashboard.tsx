@@ -1,47 +1,47 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import api from "../apis/apiAxios"
-import { useNavigate } from "react-router";
+import api from "../apis/apiAxios";
+import { toast } from "react-toastify";
+import PerfilUsuario from "./perfil/PerfilUsuario";
+import PainelAdmin from "./perfil/PainelAdmin";
 
-interface Props {
-  token: string;
-  setToken: (token: string | null) => void;
+interface Usuario {
+  id: number;
+  nome: string;
+  email: string;
+  tipo_usuario: string;
 }
 
-const Dashboard: React.FC<Props> = ({ token, setToken }) => {
-  const [mensagem, setMensagem] = useState("");
-
-  const navigate = useNavigate()
+const Dashboard: React.FC = () => {
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    const fetchDashboard = async () => {
+    const fetchPerfil = async () => {
       try {
-        const res = await api.get("http://localhost:5000/dashboard", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setMensagem(res.data.message);
-      } catch (err: unknown) {
-        if (axios.isAxiosError(err) && err.response) {
-          setMensagem(err.response.data.message);
-        } else {
-          setMensagem("Erro desconhecido");
-        }
+        const res = await api.get("/perfil");
+        setUsuario(res.data);
+      } catch (err) {
+        console.error(err);
+        toast.error("Erro ao carregar dados do usuário");
+      } finally {
+        setCarregando(false);
       }
     };
-    fetchDashboard();
-  }, [token]);
+    fetchPerfil();
+  }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    setTimeout(() => navigate("/login"), 50);
-  };
+  if (carregando) return <p>Carregando painel...</p>;
+  if (!usuario) return <p>Usuário não encontrado.</p>;
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      <p>{mensagem}</p>
-      <button onClick={handleLogout}>Sair</button>
+    <div className="dashboard-container">
+      <h2>Bem-vindo, {usuario.nome}</h2>
+
+      {usuario.tipo_usuario === "admin" ? (
+        <PainelAdmin usuario={usuario} />
+      ) : (
+        <PerfilUsuario usuario={usuario} />
+      )}
     </div>
   );
 };

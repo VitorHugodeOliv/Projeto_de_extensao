@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from datetime import datetime, timedelta, UTC
 import jwt
 from db import conectar
 from config import settings
@@ -185,3 +186,86 @@ def rejeitar_solicitacao():
         "message": f"História ID {historia_id} rejeitada com motivo registrado.",
         "motivo": motivo
     }), 200
+
+@admin_bp.route("/admin/estatisticas", methods=["GET"])
+def estatisticas_admin():
+    token_header = request.headers.get("Authorization")
+    if not token_header or not token_header.startswith("Bearer "):
+        return jsonify({"message": "Token não fornecido"}), 401
+
+    token = token_header.split(" ")[1]
+    usuario = verificar_admin(token)
+
+    if not usuario:
+        return jsonify({"message": "Acesso negado: apenas administradores podem acessar esta rota."}), 403
+
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT c.nome AS categoria, COUNT(h.id) AS total
+        FROM Historias h
+        LEFT JOIN Categorias c ON h.categoria_id = c.id
+        GROUP BY c.nome
+    """)
+    por_categoria = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT status, COUNT(id) AS total
+        FROM Historias
+        GROUP BY status
+    """)
+    por_status = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT 
+            COUNT(*) AS total,
+            SUM(status = 'Aprovada') AS aprovadas,
+            SUM(status = 'Rejeitada') AS rejeitadas,
+            SUM(status = 'Em análise') AS em_analise
+        FROM Historias
+    """)
+    totais = cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({
+        "porCategoria": por_categoria,
+        "porStatus": por_status,
+        "totais": totais
+    }), 200
+
+@admin_bp.route("/admin/estatisticas-temporais", methods=["GET"])
+def estatisticas_temporais():
+    token_header = request.headers.get("Authorization")
+    if not token_header or not token_header.startswith("Bearer "):
+        return jsonify({"message": "Token não fornecido"}), 401
+
+    token = token_header.split(" ")[1]
+    usuario = verificar_admin(token)
+    if not usuario:
+        return jsonify({"message": "Acesso negado: apenas administradores podem acessar esta rota."}), 403
+
+    meses = int(request.args.get("meses", 3))
+    inicio = datetime.now(UTC) - timedelta(days=meses * 30)
+
+    conn = conectar()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT 
+            DATE_FORMAT(data_criacao, '%Y-%m') AS mes,
+            COUNT(*) AS total
+        FROM Historias
+        WHERE data_criacao >= %s
+        GROUP BY mes
+        ORDER BY mes ASC
+    """, (inicio,))
+
+    dados_temporais = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return jsonify({"dados": dados_temporais}), 200

@@ -21,7 +21,7 @@
 | 👁️ Visualização de logs no painel admin | ⬜ | Criar rota `/admin/logs` e listagem no front. |
 | 🗃️ Paginação e filtros no painel admin | ✅ | Filtro por “Em análise”, “Aprovadas”, “Rejeitadas”. |
 | 📝 Motivo da rejeição | ✅ | Admin pode adicionar comentário explicando a decisão. |
-| 📊 Painel estatístico | ⬜ | Gráficos com contagem de histórias por categoria/status. |
+| 📊 Painel estatístico | ✅ | Gráficos com contagem de histórias por categoria/status. |
 
 ---
 

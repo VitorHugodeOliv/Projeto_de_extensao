@@ -61,8 +61,8 @@ def refresh_token():
 
         novo_access = jwt.encode({
             "id": decoded["id"],
-            "nome": decoded.get("nome"),  # <—
-            "tipo_usuario": decoded.get("tipo_usuario", "usuario"),  # <—
+            "nome": decoded.get("nome"),
+            "tipo_usuario": decoded.get("tipo_usuario", "usuario"),
             "exp": datetime.now(UTC) + timedelta(minutes=30)
         }, SECRET_KEY, algorithm="HS256")
 
