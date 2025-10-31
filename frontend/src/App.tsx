@@ -3,7 +3,6 @@ import { Route, Routes } from "react-router";
 import ToastProvider from './utils/ToastProvider'
 import RotaLogin from "./routes/RotaLogin";
 import RotaRegistro from "./routes/RotaRegistro";
-import RotaPerfil from "./routes/RotaPerfil";
 import RotaHomePage from "./routes/RotaHomePage";
 import RotaDashboard from "./routes/RotaDashboard";
 import RotaHistoryRegister from "./routes/RotaHistoryRegister";
@@ -34,11 +33,6 @@ const App: React.FC = () => {
               path="/enviar-historia"
               element={<ProtectedRoute>
                 <RotaHistoryRegister />
-              </ProtectedRoute>} />
-            <Route
-              path="/perfil"
-              element={<ProtectedRoute>
-                <RotaPerfil />
               </ProtectedRoute>} />
             <Route
               path="/admin"

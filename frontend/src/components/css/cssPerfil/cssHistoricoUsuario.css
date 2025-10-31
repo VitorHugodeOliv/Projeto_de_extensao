@@ -1,0 +1,118 @@
+.historico-container {
+    padding: 1rem 2rem;
+}
+
+.historico-container h2 {
+    margin-bottom: 1.5rem;
+    color: #009170;
+}
+
+.cards-resumo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.card-resumo {
+    flex: 1;
+    min-width: 150px;
+    max-width: 200px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card-resumo h4 {
+    color: #555;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.card-resumo p {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.card-resumo:hover {
+    transform: translateY(-3px);
+}
+
+.card-resumo.total {
+    border-top: 5px solid #009170;
+}
+
+.card-resumo.aprovadas {
+    border-top: 5px solid #00c853;
+}
+
+.card-resumo.rejeitadas {
+    border-top: 5px solid #d32f2f;
+}
+
+.card-resumo.analise {
+    border-top: 5px solid #ffb300;
+}
+
+.lista-historias {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.2rem;
+}
+
+.card-historia {
+    background: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+}
+
+.card-historia h3 {
+    color: #009170;
+    margin-bottom: 0.5rem;
+}
+
+.card-historia p {
+    margin: 0.3rem 0;
+}
+
+.card-historia .subtitulo {
+    font-style: italic;
+    color: #777;
+}
+
+.card-historia:hover {
+    transform: translateY(-3px);
+}
+
+.status {
+    font-weight: bold;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    color: white;
+}
+
+.status.aprovada {
+    background-color: #00c853;
+}
+
+.status.rejeitada {
+    background-color: #d32f2f;
+}
+
+.status.em-análise {
+    background-color: #ffb300;
+}
+
+.sem-historias {
+    text-align: center;
+    color: #666;
+    margin-top: 2rem;
+    font-style: italic;
+}

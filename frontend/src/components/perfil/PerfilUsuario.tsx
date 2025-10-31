@@ -1,49 +1,136 @@
 import React, { useEffect, useState } from "react";
 import api from "../../apis/apiAxios";
+import { toast } from "react-toastify";
+import "../css/cssPerfil/cssPerfilUsuario.css";
 
 interface Usuario {
-  id: number;
   nome: string;
   email: string;
   tipo_usuario: string;
+  endereco?: string;
+  idade?: number;
+  apelido?: string;
+  area_artistica?: string;
+  data_criacao?: string;
 }
 
-interface Historia {
-  id: number;
-  titulo: string;
-  status: string;
-  data_criacao: string;
-}
-
-const PerfilUsuario: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
-  const [historias, setHistorias] = useState<Historia[]>([]);
+const PerfilUsuario: React.FC = () => {
+  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [editando, setEditando] = useState(false);
+  const [carregando, setCarregando] = useState(true);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    const carregarHistorias = async () => {
-      const res = await api.get(`/usuarios/${usuario.id}/historias`);
-      setHistorias(res.data);
+    const fetchPerfil = async () => {
+      try {
+        const res = await api.get("/perfil", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsuario(res.data);
+      } catch (err) {
+        console.error("Erro ao carregar perfil:", err);
+        toast.error("Erro ao carregar informações do perfil.");
+      } finally {
+        setCarregando(false);
+      }
     };
-    carregarHistorias();
-  }, [usuario.id]);
+    fetchPerfil();
+  }, [token]);
+
+  const handleSalvar = async () => {
+    try {
+      const res = await api.put("/perfil", usuario, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(res.data.message || "Alterações salvas com sucesso! 🎉");
+      setEditando(false);
+    } catch (err) {
+      console.error("Erro ao salvar perfil:", err);
+      toast.error("Erro ao salvar alterações 😕");
+    }
+  };
+
+  if (carregando) return <p>Carregando perfil...</p>;
+  if (!usuario) return <p>Não foi possível carregar o perfil.</p>;
 
   return (
-    <div className="perfil-usuario">
-      <h3>📋 Meus Dados</h3>
-      <p><strong>Nome:</strong> {usuario.nome}</p>
-      <p><strong>Email:</strong> {usuario.email}</p>
-      <hr />
+    <div className="perfil-dashboard">
+      <h2>👤 Meu Perfil</h2>
 
-      <h3>📚 Minhas Histórias</h3>
-      {historias.length === 0 ? (
-        <p>Você ainda não enviou nenhuma história.</p>
-      ) : (
-        <ul>
-          {historias.map((h) => (
-            <li key={h.id}>
-              <strong>{h.titulo}</strong> — <em>{h.status}</em> ({new Date(h.data_criacao).toLocaleDateString("pt-BR")})
-            </li>
-          ))}
-        </ul>
+      {!editando && (
+        <div className="perfil-visualizacao">
+          <p><strong>Nome:</strong> {usuario.nome}</p>
+          <p><strong>Email:</strong> {usuario.email}</p>
+          <p><strong>Apelido:</strong> {usuario.apelido || "—"}</p>
+          <p><strong>Endereço:</strong> {usuario.endereco || "—"}</p>
+          <p><strong>Idade:</strong> {usuario.idade || "—"}</p>
+          <p><strong>Área Artística:</strong> {usuario.area_artistica || "—"}</p>
+          {usuario.data_criacao && (
+            <p>
+              <strong>Conta criada em:</strong>{" "}
+              {new Date(usuario.data_criacao).toLocaleDateString("pt-BR")}
+            </p>
+          )}
+
+          <button className="btn-alterar" onClick={() => setEditando(true)}>
+            ✏️ Alterar informações
+          </button>
+        </div>
+      )}
+
+      {editando && (
+        <div className="perfil-edicao">
+          <label>Nome:</label>
+          <input
+            type="text"
+            value={usuario.nome}
+            onChange={(e) => setUsuario({ ...usuario, nome: e.target.value })}
+          />
+
+          <label>Apelido:</label>
+          <input
+            type="text"
+            value={usuario.apelido || ""}
+            onChange={(e) => setUsuario({ ...usuario, apelido: e.target.value })}
+          />
+
+          <label>Endereço:</label>
+          <input
+            type="text"
+            value={usuario.endereco || ""}
+            onChange={(e) => setUsuario({ ...usuario, endereco: e.target.value })}
+          />
+
+          <label>Idade:</label>
+          <input
+            type="number"
+            value={usuario.idade || ""}
+            onChange={(e) =>
+              setUsuario({
+                ...usuario,
+                idade: e.target.value ? parseInt(e.target.value) : undefined,
+              })
+            }
+          />
+
+          <label>Área Artística:</label>
+          <input
+            type="text"
+            value={usuario.area_artistica || ""}
+            onChange={(e) =>
+              setUsuario({ ...usuario, area_artistica: e.target.value })
+            }
+          />
+
+          <div className="botoes-edicao">
+            <button className="btn-salvar" onClick={handleSalvar}>
+              💾 Salvar
+            </button>
+            <button className="btn-cancelar" onClick={() => setEditando(false)}>
+              ❌ Cancelar
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

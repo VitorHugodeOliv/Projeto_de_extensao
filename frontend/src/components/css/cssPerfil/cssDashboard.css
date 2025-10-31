@@ -1,0 +1,149 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+}
+
+.sidebar {
+  width: 230px;
+  background: rgba(31, 41, 55, 0.88);
+  color: #fff;
+  padding: 1.2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: transform 0.3s ease;
+  backdrop-filter: blur(6px);
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.25);
+}
+
+.sidebar h2 {
+  margin-bottom: 1.2rem;
+  color: #facc15;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.sidebar-user {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-menu button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  text-align: left;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.15s;
+}
+
+.sidebar-menu button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(3px);
+}
+
+.sidebar-menu button.ativo {
+  background: #facc15;
+  color: #1f2937;
+  font-weight: bold;
+  transform: translateX(3px);
+}
+
+.dashboard-conteudo {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+.btn-hamburguer {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001;
+  background: rgba(31, 41, 55, 0.88);
+  color: #facc15;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.4rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-hamburguer:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .btn-hamburguer {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    width: 230px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.aberta {
+    left: 0;
+  }
+
+  .dashboard-conteudo {
+    padding-top: 4rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .dashboard-container {
+    flex-direction: row;
+  }
+
+  .sidebar {
+    position: relative;
+    width: 230px;
+    height: auto;
+    transform: none;
+    left: 0;
+    top: 0;
+  }
+
+  .dashboard-conteudo {
+    flex: 1;
+    padding: 1.5rem;
+    margin-left: 0;
+  }
+
+  .btn-hamburguer {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar-menu button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.7rem;
+  }
+}

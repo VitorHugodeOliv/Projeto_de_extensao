@@ -130,6 +130,70 @@ def listar_historias():
     except Exception as e:
         print("Erro ao buscar histórias:", e)
         return jsonify({"message": "Erro ao buscar histórias."}), 500
+    
+@historias_bp.route("/usuarios/<int:id_usuario>/historias", methods=["GET"])
+def listar_historias_usuario(id_usuario):
+    token_header = request.headers.get("Authorization")
+    if not token_header or not token_header.startswith("Bearer "):
+        return jsonify({"message": "Token não fornecido"}), 401
+
+    token = token_header.split(" ")[1]
+
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        usuario_id = decoded.get("id")
+        tipo_usuario = decoded.get("tipo_usuario")
+
+        if tipo_usuario != "admin" and usuario_id != id_usuario:
+            return jsonify({"message": "Acesso negado"}), 403
+
+        conn = conectar()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT 
+                h.id,
+                h.titulo,
+                h.subtitulo,
+                h.status,
+                h.data_criacao,
+                c.nome AS categoria_nome,
+                h.autor_artista
+            FROM Historias h
+            LEFT JOIN Categorias c ON h.categoria_id = c.id
+            WHERE h.proponente = %s
+            ORDER BY h.data_criacao DESC
+        """, (id_usuario,))
+
+        historias = cursor.fetchall()
+
+        cursor.execute("""
+            SELECT 
+                COUNT(*) AS total,
+                SUM(status = 'Aprovada') AS aprovadas,
+                SUM(status = 'Rejeitada') AS rejeitadas,
+                SUM(status = 'Em análise') AS em_analise
+            FROM Historias
+            WHERE proponente = %s
+        """, (id_usuario,))
+        resumo = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "usuario_id": id_usuario,
+            "resumo": resumo,
+            "historias": historias
+        }), 200
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token expirado"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Token inválido"}), 401
+    except Exception as e:
+        print("Erro ao listar histórias do usuário:", e)
+        return jsonify({"message": "Erro ao buscar histórias do usuário."}), 500
 
 @historias_bp.route("/historias/<int:historia_id>/curtir", methods=["POST"])
 def curtir_historia(historia_id):

@@ -15,7 +15,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import "../css/cssPainelAdmin.css";
+import "../css/cssPerfil/cssPainelAdmin.css";
 
 interface Totais {
   total: number;

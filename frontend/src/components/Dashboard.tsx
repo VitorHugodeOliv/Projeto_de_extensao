@@ -1,47 +1,112 @@
-import React, { useEffect, useState } from "react";
-import api from "../apis/apiAxios";
-import { toast } from "react-toastify";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PerfilUsuario from "./perfil/PerfilUsuario";
-import PainelAdmin from "./perfil/PainelAdmin";
-
-interface Usuario {
-  id: number;
-  nome: string;
-  email: string;
-  tipo_usuario: string;
-}
+import HistoricoUsuario from "./perfil/HistoricoUsuario";
+import { toast } from "react-toastify";
+import api from "../apis/apiAxios";
+import "./css/cssPerfil/cssDashboard.css";
 
 const Dashboard: React.FC = () => {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-  const [carregando, setCarregando] = useState(true);
+  const [abaAtiva, setAbaAtiva] = useState<string>("perfil");
+  const [usuario, setUsuario] = useState<any>(null);
+  const [menuAberto, setMenuAberto] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPerfil = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    const fetchDados = async () => {
       try {
-        const res = await api.get("/perfil");
+        const res = await api.get("/dashboard", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setUsuario(res.data);
       } catch (err) {
-        console.error(err);
-        toast.error("Erro ao carregar dados do usuário");
-      } finally {
-        setCarregando(false);
+        console.error("Erro ao carregar dashboard:", err);
+        toast.error("Erro ao carregar dados do usuário 😕");
       }
     };
-    fetchPerfil();
-  }, []);
 
-  if (carregando) return <p>Carregando painel...</p>;
-  if (!usuario) return <p>Usuário não encontrado.</p>;
+    fetchDados();
+  }, [navigate]);
+
+  const renderConteudo = () => {
+    switch (abaAtiva) {
+      case "perfil":
+        return <PerfilUsuario />;
+      case "historico":
+        return <HistoricoUsuario usuario={usuario} />;
+      case "curtidas":
+        return <p>💚 Suas histórias curtidas aparecerão aqui em breve!</p>;
+      case "config":
+        return <p>⚙️ Configurações de conta e preferências (em breve).</p>;
+      default:
+        return <p>Selecione uma opção no menu.</p>;
+    }
+  };
+
+  if (!usuario) return <p>Carregando informações...</p>;
 
   return (
     <div className="dashboard-container">
-      <h2>Bem-vindo, {usuario.nome}</h2>
+      <button
+        className="btn-hamburguer"
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        ☰
+      </button>
 
-      {usuario.tipo_usuario === "admin" ? (
-        <PainelAdmin usuario={usuario} />
-      ) : (
-        <PerfilUsuario usuario={usuario} />
-      )}
+      <aside className={`sidebar ${menuAberto ? "aberta" : ""}`}>
+        <h2 className="sidebar-title">Painel do Usuário</h2>
+        <p className="sidebar-user">
+          Olá, {usuario.message.split(",")[1].replace("!", "")} 👋
+        </p>
+
+        <nav className="sidebar-menu">
+          <button
+            className={abaAtiva === "perfil" ? "ativo" : ""}
+            onClick={() => {
+              setAbaAtiva("perfil");
+              setMenuAberto(false);
+            }}
+          >
+            👤 Perfil
+          </button>
+          <button
+            className={abaAtiva === "historico" ? "ativo" : ""}
+            onClick={() => {
+              setAbaAtiva("historico");
+              setMenuAberto(false);
+            }}
+          >
+            📚 Histórico
+          </button>
+          <button
+            className={abaAtiva === "curtidas" ? "ativo" : ""}
+            onClick={() => {
+              setAbaAtiva("curtidas");
+              setMenuAberto(false);
+            }}
+          >
+            💚 Curtidas
+          </button>
+          <button
+            className={abaAtiva === "config" ? "ativo" : ""}
+            onClick={() => {
+              setAbaAtiva("config");
+              setMenuAberto(false);
+            }}
+          >
+            ⚙️ Configurações
+          </button>
+        </nav>
+      </aside>
+
+      <main className="dashboard-conteudo">{renderConteudo()}</main>
     </div>
   );
 };
