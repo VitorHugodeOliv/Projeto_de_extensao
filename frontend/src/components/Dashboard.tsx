@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PerfilUsuario from "./perfil/PerfilUsuario";
 import HistoricoUsuario from "./perfil/HistoricoUsuario";
 import PainelAdmin from "./perfil/PainelAdmin";
+import HistoricoCurtidas from "./perfil/HistoricoCurtidas";
 import { toast } from "react-toastify";
 import api from "../apis/apiAxios";
 import "./css/cssPerfil/cssDashboard.css";
@@ -42,7 +43,7 @@ const Dashboard: React.FC = () => {
       case "historico":
         return <HistoricoUsuario usuario={usuario} />;
       case "curtidas":
-        return <p>💚 Suas histórias curtidas aparecerão aqui em breve!</p>;
+        return <HistoricoCurtidas usuarioId={usuario.user_id} />;
       case "config":
         return <p>⚙️ Configurações de conta e preferências (em breve).</p>;
       case "graficos":

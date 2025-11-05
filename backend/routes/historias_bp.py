@@ -131,8 +131,8 @@ def listar_historias():
         print("Erro ao buscar histórias:", e)
         return jsonify({"message": "Erro ao buscar histórias."}), 500
     
-@historias_bp.route("/usuarios/<int:id_usuario>/historias", methods=["GET"])
-def listar_historias_usuario(id_usuario):
+@historias_bp.route("/historias/usuario", methods=["GET"])
+def listar_historias_do_usuario_autenticado():
     token_header = request.headers.get("Authorization")
     if not token_header or not token_header.startswith("Bearer "):
         return jsonify({"message": "Token não fornecido"}), 401
@@ -142,10 +142,6 @@ def listar_historias_usuario(id_usuario):
     try:
         decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         usuario_id = decoded.get("id")
-        tipo_usuario = decoded.get("tipo_usuario")
-
-        if tipo_usuario != "admin" and usuario_id != id_usuario:
-            return jsonify({"message": "Acesso negado"}), 403
 
         conn = conectar()
         cursor = conn.cursor(dictionary=True)
@@ -156,6 +152,7 @@ def listar_historias_usuario(id_usuario):
                 h.titulo,
                 h.subtitulo,
                 h.status,
+                h.motivo_rejeicao,
                 h.data_criacao,
                 c.nome AS categoria_nome,
                 h.autor_artista
@@ -163,7 +160,7 @@ def listar_historias_usuario(id_usuario):
             LEFT JOIN Categorias c ON h.categoria_id = c.id
             WHERE h.proponente = %s
             ORDER BY h.data_criacao DESC
-        """, (id_usuario,))
+        """, (usuario_id,))
 
         historias = cursor.fetchall()
 
@@ -175,14 +172,14 @@ def listar_historias_usuario(id_usuario):
                 SUM(status = 'Em análise') AS em_analise
             FROM Historias
             WHERE proponente = %s
-        """, (id_usuario,))
+        """, (usuario_id,))
         resumo = cursor.fetchone()
 
         cursor.close()
         conn.close()
 
         return jsonify({
-            "usuario_id": id_usuario,
+            "usuario_id": usuario_id,
             "resumo": resumo,
             "historias": historias
         }), 200
@@ -192,8 +189,8 @@ def listar_historias_usuario(id_usuario):
     except jwt.InvalidTokenError:
         return jsonify({"message": "Token inválido"}), 401
     except Exception as e:
-        print("Erro ao listar histórias do usuário:", e)
-        return jsonify({"message": "Erro ao buscar histórias do usuário."}), 500
+        print("Erro ao listar histórias do usuário autenticado:", e)
+        return jsonify({"message": "Erro ao buscar histórias."}), 500
 
 @historias_bp.route("/historias/<int:historia_id>/curtir", methods=["POST"])
 def curtir_historia(historia_id):
@@ -243,8 +240,11 @@ def curtir_historia(historia_id):
         print("Erro ao curtir história:", e)
         return jsonify({"message": "Erro ao curtir história."}), 500
 
-@historias_bp.route("/historias/<int:historia_id>/curtidas", methods=["GET"])
+@historias_bp.route("/historias/<int:historia_id>/curtidas", methods=["GET", "OPTIONS"])
 def contar_curtidas(historia_id):
+    if request.method == "OPTIONS":
+        return jsonify({"ok": True}), 200
+
     try:
         conn = conectar()
         cursor = conn.cursor(dictionary=True)
@@ -276,6 +276,56 @@ def contar_curtidas(historia_id):
     except Exception as e:
         print("Erro ao contar curtidas:", e)
         return jsonify({"message": "Erro ao contar curtidas."}), 500
+    
+@historias_bp.route("/usuarios/<int:id_usuario>/curtidas", methods=["GET"])
+def listar_curtidas_usuario(id_usuario):
+    token_header = request.headers.get("Authorization")
+    if not token_header or not token_header.startswith("Bearer "):
+        return jsonify({"message": "Token não fornecido"}), 401
+
+    token = token_header.split(" ")[1]
+    try:
+        decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        usuario_id = decoded.get("id")
+        tipo_usuario = decoded.get("tipo_usuario")
+
+        if tipo_usuario != "admin" and usuario_id != id_usuario:
+            return jsonify({"message": "Acesso negado"}), 403
+
+        conn = conectar()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT 
+                h.id,
+                h.titulo,
+                h.subtitulo,
+                h.autor_artista,
+                h.status,
+                h.data_criacao,
+                c.nome AS categoria_nome
+            FROM Curtidas cu
+            JOIN Historias h ON cu.historia_id = h.id
+            LEFT JOIN Categorias c ON h.categoria_id = c.id
+            WHERE cu.usuario_id = %s
+            ORDER BY cu.data_criacao DESC
+        """, (id_usuario,))
+
+        curtidas = cursor.fetchall()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify(curtidas), 200
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token expirado"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Token inválido"}), 401
+    except Exception as e:
+        print("Erro ao listar curtidas do usuário:", e)
+        return jsonify({"message": "Erro ao listar curtidas do usuário."}), 500
+
 
 @historias_bp.route("/historias/<int:historia_id>/comentarios", methods=["POST"])
 def comentar_historia(historia_id):

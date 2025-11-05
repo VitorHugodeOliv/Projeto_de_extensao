@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../apis/apiAxios";
-import "../css/cssPerfil/cssHistoricoUsuario.css"
+import "../css/cssPerfil/cssHistoricoUsuario.css";
 
 interface Historia {
   id: number;
@@ -10,6 +10,7 @@ interface Historia {
   status: string;
   data_criacao: string;
   autor_artista: string;
+  motivo_rejeicao?: string;
 }
 
 interface Resumo {
@@ -19,14 +20,7 @@ interface Resumo {
   em_analise: number;
 }
 
-interface Usuario {
-  id: number;
-  nome: string;
-  email: string;
-  tipo_usuario: string;
-}
-
-const HistoricoUsuario: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
+const HistoricoUsuario: React.FC = () => {
   const [historias, setHistorias] = useState<Historia[]>([]);
   const [resumo, setResumo] = useState<Resumo | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -34,7 +28,7 @@ const HistoricoUsuario: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
   useEffect(() => {
     const carregarHistorico = async () => {
       try {
-        const res = await api.get(`/usuarios/${usuario.id}/historias`);
+        const res = await api.get("/historias/usuario");
         setHistorias(res.data.historias || []);
         setResumo(res.data.resumo || null);
       } catch (err) {
@@ -43,8 +37,9 @@ const HistoricoUsuario: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
         setCarregando(false);
       }
     };
+
     carregarHistorico();
-  }, [usuario.id]);
+  }, []);
 
   if (carregando) return <p>Carregando histórico...</p>;
 
@@ -78,18 +73,35 @@ const HistoricoUsuario: React.FC<{ usuario: Usuario }> = ({ usuario }) => {
       ) : (
         <div className="lista-historias">
           {historias.map((h) => (
-            <div key={h.id} className={`card-historia ${h.status.toLowerCase().replace(" ", "-")}`}>
+            <div
+              key={h.id}
+              className={`card-historia ${h.status
+                .toLowerCase()
+                .replace(" ", "-")}`}
+            >
               <h3>{h.titulo}</h3>
               {h.subtitulo && <p className="subtitulo">{h.subtitulo}</p>}
               <p>
-                <strong>Categoria:</strong> {h.categoria_nome || "Sem categoria"}
+                <strong>Categoria:</strong>{" "}
+                {h.categoria_nome || "Sem categoria"}
               </p>
               <p>
                 <strong>Status:</strong>{" "}
-                <span className={`status ${h.status.toLowerCase().replace(" ", "-")}`}>
+                <span
+                  className={`status ${h.status
+                    .toLowerCase()
+                    .replace(" ", "-")}`}
+                >
                   {h.status}
                 </span>
               </p>
+
+              {h.status === "Rejeitada" && h.motivo_rejeicao && (
+                <p className="motivo-rejeicao">
+                  <strong>Motivo da rejeição:</strong> {h.motivo_rejeicao}
+                </p>
+              )}
+
               <p>
                 <strong>Data de Envio:</strong>{" "}
                 {new Date(h.data_criacao).toLocaleDateString("pt-BR")}

@@ -23,6 +23,17 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(historias_bp)
 
+@app.before_request
+def log_requisicoes():
+    print(f"\n🔍 [LOG REQUEST] Método: {request.method} | Rota: {request.path}")
+    print(f"Headers: {dict(request.headers)}")
+    if request.method in ["POST", "PUT", "PATCH"]:
+        try:
+            print(f"Corpo da requisição: {request.get_json()}")
+        except Exception:
+            print("Corpo da requisição: (não JSON ou vazio)")
+    print("-" * 80)
+
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
     resposta, status, decoded = validar_token()
