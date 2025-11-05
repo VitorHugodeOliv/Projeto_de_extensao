@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PerfilUsuario from "./perfil/PerfilUsuario";
 import HistoricoUsuario from "./perfil/HistoricoUsuario";
+import PainelAdmin from "./perfil/PainelAdmin";
 import { toast } from "react-toastify";
 import api from "../apis/apiAxios";
 import "./css/cssPerfil/cssDashboard.css";
@@ -44,6 +45,12 @@ const Dashboard: React.FC = () => {
         return <p>💚 Suas histórias curtidas aparecerão aqui em breve!</p>;
       case "config":
         return <p>⚙️ Configurações de conta e preferências (em breve).</p>;
+      case "graficos":
+        return usuario?.tipo_usuario === "admin" ? (
+          <PainelAdmin />
+        ) : (
+          <p>Acesso restrito aos administradores 🚫</p>
+        );
       default:
         return <p>Selecione uma opção no menu.</p>;
     }
@@ -76,6 +83,7 @@ const Dashboard: React.FC = () => {
           >
             👤 Perfil
           </button>
+
           <button
             className={abaAtiva === "historico" ? "ativo" : ""}
             onClick={() => {
@@ -85,6 +93,7 @@ const Dashboard: React.FC = () => {
           >
             📚 Histórico
           </button>
+
           <button
             className={abaAtiva === "curtidas" ? "ativo" : ""}
             onClick={() => {
@@ -94,6 +103,7 @@ const Dashboard: React.FC = () => {
           >
             💚 Curtidas
           </button>
+
           <button
             className={abaAtiva === "config" ? "ativo" : ""}
             onClick={() => {
@@ -103,6 +113,17 @@ const Dashboard: React.FC = () => {
           >
             ⚙️ Configurações
           </button>
+          {usuario?.tipo_usuario === "admin" && (
+            <button
+              className={abaAtiva === "graficos" ? "ativo" : ""}
+              onClick={() => {
+                setAbaAtiva("graficos");
+                setMenuAberto(false);
+              }}
+            >
+              📊 Gráficos
+            </button>
+          )}
         </nav>
       </aside>
 
