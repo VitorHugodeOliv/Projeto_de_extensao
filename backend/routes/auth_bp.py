@@ -3,12 +3,14 @@ from flask import Blueprint, request, jsonify
 from datetime import datetime, timedelta, UTC
 from config import settings
 from utils.token_utils import gerar_tokens
+from middlewares.limiter_config import limiter
 from controllers.controllers import cadastrar_usuario, login_usuario
 
 auth_bp = Blueprint("auth_bp", __name__)
 SECRET_KEY = settings.SECRET_KEY
 
 @auth_bp.route("/register", methods=["POST"])
+@limiter.limit("3 per minute")
 def register():
     data = request.get_json()
     campos_obrigatorios = ["nome", "email", "senha"]
@@ -33,6 +35,7 @@ def register():
     return jsonify({"message": msg, "access_token": access, "refresh_token": refresh}), 200
 
 @auth_bp.route("/login", methods=["POST"])
+@limiter.limit("5 per minute")
 def login():
     data = request.get_json()
     if not data or "email" not in data or "senha" not in data:
@@ -47,6 +50,7 @@ def login():
 
 
 @auth_bp.route("/refresh", methods=["POST"])
+@limiter.limit("10 per minute")
 def refresh_token():
     data = request.get_json()
     token = data.get("refresh_token")

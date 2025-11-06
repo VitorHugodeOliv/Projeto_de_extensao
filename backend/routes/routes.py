@@ -2,6 +2,8 @@ import os
 import jwt
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from flask_limiter.util import get_remote_address
+from middlewares.limiter_config import limiter
 import logging
 from logging.handlers import RotatingFileHandler
 from utils.token_utils import validar_token
@@ -16,6 +18,8 @@ from middlewares.error_handler import register_error_handlers
 
 app = Flask(__name__)
 CORS(app)
+
+limiter.init_app(app)
 
 if not os.path.exists("logs"):
     os.makedirs("logs")
@@ -120,6 +124,14 @@ def listar_categorias():
         return jsonify(categorias)
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
+    
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return jsonify({
+        "status": "error",
+        "message": "Limite de requisições excedido. Tente novamente mais tarde.",
+        "details": str(e.description)
+    }), 429
 
 if __name__ == "__main__":
     app.run(debug=True)

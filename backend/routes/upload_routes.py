@@ -3,6 +3,7 @@ import re
 import jwt
 from datetime import datetime
 from flask import Blueprint, request, jsonify
+from middlewares.limiter_config import limiter
 from db import conectar
 from config import settings
 from werkzeug.utils import secure_filename
@@ -17,6 +18,7 @@ def allowed_file(filename: str):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @upload_bp.route("/upload", methods=["POST"])
+@limiter.limit("10 per hour")
 def upload_arquivo():
     token = request.headers.get("Authorization")
     if not token or not token.startswith("Bearer "):

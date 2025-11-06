@@ -7,7 +7,7 @@
 |--------|:------:|-----------|
 | 🔐 Criptografia e autenticação JWT revisada | ✅ | Confirmar uso do `bcrypt` e validade dos tokens. |
 | 🕒 Refresh Token | ✅ | Implementar sistema de renovação automática do JWT. |
-| 🧩 Middleware de erros globais | ⬜ | Criar interceptador de erros com mensagens padronizadas em JSON. |
+| 🧩 Middleware de erros globais | ✅ | Criar interceptador de erros com mensagens padronizadas em JSON. |
 | 🛡️ Rate limiting | ⬜ | Adicionar `Flask-Limiter` nas rotas sensíveis. |
 | ✉️ Envio de e-mails | ⬜ | Implementar `Flask-Mail` para redefinição de senha e notificações. |
 
@@ -18,7 +18,7 @@
 | Tarefa | Status | Descrição |
 |--------|:------:|-----------|
 | 🧾 LogsAdmin com ON DELETE SET NULL | ✅ | Mantém histórico após exclusão de histórias. |
-| 👁️ Visualização de logs no painel admin | ⬜ | Criar rota `/admin/logs` e listagem no front. |
+| 👁️ Visualização de logs no painel admin | ✅ | Criar rota `/admin/logs` e listagem no front. |
 | 🗃️ Paginação e filtros no painel admin | ✅ | Filtro por “Em análise”, “Aprovadas”, “Rejeitadas”. |
 | 📝 Motivo da rejeição | ✅ | Admin pode adicionar comentário explicando a decisão. |
 | 📊 Painel estatístico | ✅ | Gráficos com contagem de histórias por categoria/status. |
@@ -45,7 +45,7 @@
 | 📦 Separar chamadas Axios em `api.ts` | ✅ | Centralizar endpoints. |
 | 🌍 Context API / Zustand | ⬜ | Gerenciar token e dados globalmente. |
 | 🎨 Migrar CSS para módulos | ⬜ | Isolar estilos e evitar conflitos. |
-| 🧪 Testes com Pytest (back) e RTL (front) | ✅ | Já iniciados; expandir cobertura. |
+| 🧪 Testes com Pytest (back) e RTL (front) | ⚠️ | Já iniciados; expandir cobertura. |
 | 🧰 Scripts de inicialização (`setup.sh`) | ⬜ | Criar scripts para subir banco + servidor com 1 comando. |
 
 ---
@@ -77,17 +77,12 @@
 | Fase | Percentual estimado |
 |------|---------------------|
 | 🧱 Estabilidade | 60% |
-| ⚙️ Funcionalidade Admin | 65% |
+| ⚙️ Funcionalidade Admin | 100% |
 | 🎨 UX e Frontend | 100% |
-| 🧩 Estrutura | 60% |
-| ☁️ Infraestrutura | 10% |
+| 🧩 Estrutura | 40% |
+| ☁️ Infraestrutura | 00% |
 | 📈 Expansão | 25% |
 
 ---
 
-## 💡 passos imediatos
-
-1. **Implementar o campo “motivo da rejeição”** no backend e frontend.  
-2. Criar rota `/admin/logs` e visualização de histórico no painel.  
-3. Adotar **Context API** pra gerenciar o token globalmente.  
-4. Iniciar setup de **Docker Compose** pra rodar tudo com 1 comando.  
+## 💡 passos imediatos 

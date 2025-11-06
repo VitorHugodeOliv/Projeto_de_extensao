@@ -36,12 +36,10 @@ const LogsAdmin: React.FC = () => {
     fetchLogs();
   }, []);
 
-  // 🔍 Aplica o filtro digitado
   const logsFiltrados = logs.filter((linha) =>
     linha.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  // 📦 Agrupa linhas que pertencem ao mesmo log (começam com data)
   const blocosDeLog: string[][] = [];
   let blocoAtual: string[] = [];
 
