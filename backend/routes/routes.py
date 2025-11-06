@@ -2,6 +2,8 @@ import os
 import jwt
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import logging
+from logging.handlers import RotatingFileHandler
 from utils.token_utils import validar_token
 from db import conectar
 from models.models import atualizar_usuario, buscar_usuario_por_id
@@ -10,9 +12,25 @@ from routes.upload_routes import upload_bp
 from routes.admin_bp import admin_bp
 from routes.auth_bp import auth_bp
 from routes.historias_bp import historias_bp
+from middlewares.error_handler import register_error_handlers
 
 app = Flask(__name__)
 CORS(app)
+
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
+log_handler = RotatingFileHandler(
+    "logs/app.log", maxBytes=5_000_000, backupCount=3, encoding="utf-8"
+)
+log_formatter = logging.Formatter(
+    "%(asctime)s [%(levelname)s] %(message)s in %(pathname)s:%(lineno)d"
+)
+log_handler.setFormatter(log_formatter)
+log_handler.setLevel(logging.ERROR)
+
+app.logger.addHandler(log_handler)
+app.logger.setLevel(logging.ERROR)
 
 SECRET_KEY = settings.SECRET_KEY
 
@@ -22,6 +40,8 @@ app.register_blueprint(upload_bp)
 app.register_blueprint(admin_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(historias_bp)
+
+register_error_handlers(app)
 
 @app.before_request
 def log_requisicoes():

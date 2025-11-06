@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from datetime import datetime, timedelta, UTC
+import os
 import jwt
 from db import conectar
 from config import settings
@@ -269,3 +270,57 @@ def estatisticas_temporais():
     conn.close()
 
     return jsonify({"dados": dados_temporais}), 200
+
+@admin_bp.route("/admin/logs", methods=["GET"])
+def visualizar_logs():
+    token_header = request.headers.get("Authorization")
+    if not token_header or not token_header.startswith("Bearer "):
+        return jsonify({"message": "Token não fornecido"}), 401
+
+    token = token_header.split(" ")[1]
+    usuario = verificar_admin(token)
+    if not usuario:
+        return jsonify({"message": "Acesso negado: apenas administradores podem acessar esta rota."}), 403
+
+    log_path = os.path.join(os.getcwd(), "logs", "app.log")
+
+    if not os.path.exists(log_path):
+        return jsonify({"logs": [], "message": "Nenhum log encontrado."}), 200
+
+    try:
+        page = int(request.args.get("page", 1))
+        per_page = int(request.args.get("per_page", 50))
+
+        if page < 1 or per_page < 1:
+            return jsonify({"message": "Parâmetros de paginação inválidos."}), 400
+
+        with open(log_path, "r", encoding="utf-8") as f:
+            todas_linhas = f.readlines()
+
+        total_linhas = len(todas_linhas)
+
+        start = max(total_linhas - (page * per_page), 0)
+        end = total_linhas - ((page - 1) * per_page)
+
+        selecionadas = todas_linhas[start:end] if end > start else todas_linhas[start:]
+
+        logs_formatados = [linha.strip() for linha in selecionadas if linha.strip()]
+        logs_formatados.reverse()
+
+        total_paginas = (total_linhas + per_page - 1) // per_page
+
+        return jsonify({
+            "message": f"Página {page} de {total_paginas} retornada com sucesso.",
+            "page": page,
+            "per_page": per_page,
+            "total_linhas": total_linhas,
+            "total_paginas": total_paginas,
+            "logs": logs_formatados
+        }), 200
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": "Erro ao ler o arquivo de logs.",
+            "details": str(e)
+        }), 500

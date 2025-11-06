@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import PerfilUsuario from "./perfil/PerfilUsuario";
 import HistoricoUsuario from "./perfil/HistoricoUsuario";
-import PainelAdmin from "./perfil/PainelAdmin";
 import HistoricoCurtidas from "./perfil/HistoricoCurtidas";
-import { toast } from "react-toastify";
+import PainelAdmin from "./perfil/PainelAdmin";
+import LogsAdmin from "./perfil/LogsAdmin"
 import api from "../apis/apiAxios";
 import "./css/cssPerfil/cssDashboard.css";
 
@@ -46,6 +47,12 @@ const Dashboard: React.FC = () => {
         return <HistoricoCurtidas usuarioId={usuario.user_id} />;
       case "config":
         return <p>⚙️ Configurações de conta e preferências (em breve).</p>;
+      case "logs":
+        return usuario?.tipo_usuario === "admin" ? (
+          <LogsAdmin />
+        ) : (
+          <p>Acesso restrito aos administradores 🚫</p>
+        );
       case "graficos":
         return usuario?.tipo_usuario === "admin" ? (
           <PainelAdmin />
@@ -114,20 +121,31 @@ const Dashboard: React.FC = () => {
           >
             ⚙️ Configurações
           </button>
-          {usuario?.tipo_usuario === "admin" && (
-            <button
-              className={abaAtiva === "graficos" ? "ativo" : ""}
-              onClick={() => {
-                setAbaAtiva("graficos");
+         {usuario?.tipo_usuario === "admin" && (
+           <>
+              <button
+                className={abaAtiva === "graficos" ? "ativo" : ""}
+                onClick={() => {
+                  setAbaAtiva("graficos");
+                  setMenuAberto(false);
+                }}
+              >
+                📊 Gráficos
+              </button>
+
+              <button
+                className={abaAtiva === "logs" ? "ativo" : ""}
+                onClick={() => {
+                setAbaAtiva("logs");
                 setMenuAberto(false);
               }}
-            >
-              📊 Gráficos
-            </button>
+              >
+                🧾 Logs do Sistema
+              </button>
+           </>
           )}
         </nav>
       </aside>
-
       <main className="dashboard-conteudo">{renderConteudo()}</main>
     </div>
   );
