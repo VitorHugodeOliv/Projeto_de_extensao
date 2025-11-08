@@ -15,6 +15,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import RegistroConfirmado from "./components/RegistroConfirmado";
 import Confirmado from "./components/Confirmado";
 import ErroConfirmacao from "./components/ErroConfirmacao";
+import ForgottenPassword from "./components/passwordRecovery/ForgottenPassword";
+import PasswordReset from "./components/passwordRecovery/PasswordReset";
 
 const App: React.FC = () => {
 
@@ -30,6 +32,8 @@ const App: React.FC = () => {
             <Route path="registro-confirmado" element={ <RegistroConfirmado />} />
             <Route path="confirmado" element={ <Confirmado />} />
             <Route path="/erro-confirmacao" element={<ErroConfirmacao />} />
+            <Route path="/esqueci-senha" element={ <ForgottenPassword />} />
+            <Route path="/resetar-senha/:token" element={ <PasswordReset />} />
             <Route
               path="/dashboard"
               element={<ProtectedRoute>

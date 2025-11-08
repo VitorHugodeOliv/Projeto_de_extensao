@@ -113,6 +113,19 @@ try:
     """)
     print("Tabela 'TokensConfirmacao' verificada/criada.")
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS TokensRecuperacao (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario_id INT NOT NULL,
+            token VARCHAR(255) UNIQUE NOT NULL,
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            data_expiracao TIMESTAMP NOT NULL,
+            usado BOOLEAN DEFAULT FALSE,
+            FOREIGN KEY (usuario_id) REFERENCES Usuarios(id) ON DELETE CASCADE
+        )
+    """)
+    print("Tabela 'TokensRecuperacao' verificada/criada.")
+
     # ----------------- Admin padrão -----------------
     admins_padrao = [
         ("admin", "admin@sistema.com", "admin123"),

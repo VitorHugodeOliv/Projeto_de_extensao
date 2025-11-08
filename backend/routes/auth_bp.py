@@ -2,6 +2,7 @@ import jwt
 from flask import Blueprint, request, jsonify
 from flask import redirect
 from datetime import datetime, timedelta, UTC
+from controllers.password_controller import redefinir_senha, solicitar_recuperacao
 from db import conectar
 from config import settings
 from utils.token_utils import gerar_tokens
@@ -144,3 +145,28 @@ def refresh_token():
         return jsonify({"message": "Refresh token expirado, faça login novamente"}), 401
     except jwt.InvalidTokenError:
         return jsonify({"message": "Token inválido"}), 401
+    
+@auth_bp.route("/forgot-password", methods=["POST"])
+def forgot_password():
+    data = request.get_json()
+    email = data.get("email")
+
+    if not email:
+        return jsonify({"message": "E-mail é obrigatório"}), 400
+
+    sucesso, msg = solicitar_recuperacao(email)
+    status = 200 if sucesso else 400
+    return jsonify({"message": msg}), status
+
+
+@auth_bp.route("/reset-password/<token>", methods=["POST"])
+def reset_password(token):
+    data = request.get_json()
+    nova_senha = data.get("senha")
+
+    if not nova_senha:
+        return jsonify({"message": "A nova senha é obrigatória"}), 400
+
+    sucesso, msg = redefinir_senha(token, nova_senha)
+    status = 200 if sucesso else 400
+    return jsonify({"message": msg}), status

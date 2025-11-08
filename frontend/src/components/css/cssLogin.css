@@ -72,6 +72,19 @@
   text-decoration: underline;
 }
 
+.forgot-password {
+  color: #009170;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  transition: color 0.3s;
+}
+
+.forgot-password:hover {
+  color: #006d56;
+}
+
 .mensagem {
   margin-top: 1rem;
   padding: 0.6rem;

@@ -60,6 +60,10 @@ const Login: React.FC<Props> = ({ setToken }) => {
     navigate("/registro");
   };
 
+  const handleForgotPassword = () => {
+    navigate("/esqueci-senha");
+  };
+
   return (
     <div className="login-container">
       <h1>Bem-vindo ao Sistema Cultural</h1>
@@ -77,7 +81,10 @@ const Login: React.FC<Props> = ({ setToken }) => {
       />
 
       <button onClick={handleLogin}>Entrar</button>
-
+      
+      <p className="forgot-password" onClick={handleForgotPassword}>
+        Esqueceu sua senha?
+      </p>
       <p className="register-link" onClick={handleRegister}>
         Ainda não tem uma conta? <span>clique aqui</span>.
       </p>

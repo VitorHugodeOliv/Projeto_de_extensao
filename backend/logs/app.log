@@ -138,3 +138,34 @@ Traceback (most recent call last):
   File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
     raise NotFound() from None
 werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-08 02:13:39,470 [ERROR] [MySQLError] 1146 (42S02): Table 'sistema_login.tokensrecuperacao' doesn't exist in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:34
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\routes\auth_bp.py", line 157, in forgot_password
+    sucesso, msg = solicitar_recuperacao(email)
+                   ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\controllers\password_controller.py", line 17, in solicitar_recuperacao
+    token = gerar_token_recuperacao(usuario["id"])
+  File "C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\utils\email_utils.py", line 69, in gerar_token_recuperacao
+    cursor.execute("""
+    ~~~~~~~~~~~~~~^^^^
+        INSERT INTO TokensRecuperacao (usuario_id, token, data_expiracao)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        VALUES (%s, %s, %s)
+        ^^^^^^^^^^^^^^^^^^^
+    """, (usuario_id, token, expiracao))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\mysql\connector\cursor.py", line 617, in execute
+    self._handle_result(self._connection.cmd_query(stmt))
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 77, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\mysql\connector\connection.py", line 843, in cmd_query
+    result = self._handle_result(self._send_cmd(ServerCmd.QUERY, query))
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\mysql\connector\connection.py", line 620, in _handle_result
+    raise get_exception(packet)
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'sistema_login.tokensrecuperacao' doesn't exist
