@@ -63,3 +63,78 @@ Traceback (most recent call last):
   File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
     raise NotFound() from None
 werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-07 02:28:52,734 [ERROR] [UnhandledException] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:43
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-07 02:30:47,309 [ERROR] [UnhandledException] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:43
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-07 02:32:48,415 [ERROR] [UnhandledException] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:43
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-07 02:34:05,019 [ERROR] [UnhandledException] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:43
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2025-11-07 02:35:51,081 [ERROR] [UnhandledException] 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again. in C:\Users\Vitor\Desktop\Projeto de extenção\Sistema_Login\backend\middlewares\error_handler.py:43
+Traceback (most recent call last):
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 891, in dispatch_request
+    self.raise_routing_exception(req)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\app.py", line 500, in raise_routing_exception
+    raise request.routing_exception  # type: ignore[misc]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\flask\ctx.py", line 362, in match_request
+    result = self.url_adapter.match(return_rule=True)  # type: ignore
+  File "C:\Users\Vitor\AppData\Roaming\Python\Python313\site-packages\werkzeug\routing\map.py", line 629, in match
+    raise NotFound() from None
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.

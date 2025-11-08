@@ -1,5 +1,6 @@
 import bcrypt
 from datetime import datetime
+from controllers.email_controller import processar_confirmacao_cadastro
 from models.models import criar_usuario, buscar_usuario
 
 def cadastrar_usuario(
@@ -12,8 +13,17 @@ def cadastrar_usuario(
     apelido: str = None,
     area_artistica = None,
 ):
-    if buscar_usuario(email):
-        return False, "Usuário já existe", None
+    usuario_existente = buscar_usuario(email)
+    if usuario_existente:
+        if not usuario_existente.get("conta_ativa", False):
+            try:
+                processar_confirmacao_cadastro(email, nome)
+                return False, "Conta pendente de confirmação. Reenviamos o e-mail de ativação.", None
+            except Exception as e:
+                print(f"❌ Erro ao reenviar e-mail de confirmação: {e}")
+                return False, "Erro ao reenviar e-mail de confirmação.", None
+        
+        return False, "Usuário já existe e está ativo.", None
 
     senha_hash = bcrypt.hashpw(senha.encode("utf-8"), bcrypt.gensalt())
 
@@ -30,7 +40,12 @@ def cadastrar_usuario(
 
     if not novo_usuario:
         return False, "Erro ao criar usuário", None
-    return True, "Usuário cadastrado com sucesso", novo_usuario
+    try:
+        processar_confirmacao_cadastro(email, nome)
+    except Exception as e:
+        print(f"❌ Erro ao enviar e-mail inicial: {e}")
+
+    return True, "Usuário cadastrado com sucesso! Verifique seu e-mail para confirmar a conta.", novo_usuario
 
 
 def login_usuario(email: str, senha: str):

@@ -12,6 +12,9 @@ import RotaHeader from "./routes/RotaHeader";
 import RotaAdminCard from "./routes/RotaAdminCard";
 import HistoryDetails from "./components/HistoryDetails";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import RegistroConfirmado from "./components/RegistroConfirmado";
+import Confirmado from "./components/Confirmado";
+import ErroConfirmacao from "./components/ErroConfirmacao";
 
 const App: React.FC = () => {
 
@@ -24,6 +27,9 @@ const App: React.FC = () => {
             <Route path="/historia/:id" element={<HistoryDetails />} />
             <Route path="/registro" element={<RotaRegistro />} />
             <Route path="/login" element={<RotaLogin />} />
+            <Route path="registro-confirmado" element={ <RegistroConfirmado />} />
+            <Route path="confirmado" element={ <Confirmado />} />
+            <Route path="/erro-confirmacao" element={<ErroConfirmacao />} />
             <Route
               path="/dashboard"
               element={<ProtectedRoute>

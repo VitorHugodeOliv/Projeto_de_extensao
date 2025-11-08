@@ -3,6 +3,7 @@ import axios from "axios";
 import api from "../apis/apiAxios";
 import { toast } from "react-toastify";
 import "./css/cssRegister.css";
+import { useNavigate } from "react-router";
 
 interface Props {
   setToken: (token: string | null) => void;
@@ -16,6 +17,8 @@ const Register: React.FC<Props> = ({ setToken }) => {
   const [idade, setIdade] = useState<number | "">("");
   const [apelido, setApelido] = useState("");
   const [areaArtistica, setAreaArtistica] = useState("");
+
+  const navigate = useNavigate()
 
   const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,6 +50,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
       });
 
       toast.success("🎉 Cadastro realizado com sucesso!");
+      localStorage.setItem("email_registro", email);
       const accessToken = res.data.access_token;
       const refreshToken = res.data.refresh_token;
 
@@ -56,13 +60,10 @@ const Register: React.FC<Props> = ({ setToken }) => {
         setToken(accessToken);
       }
 
-      setNome("");
-      setEmail("");
-      setSenha("");
-      setEndereco("");
-      setIdade("");
-      setApelido("");
-      setAreaArtistica("");
+      if (res.status === 201) {
+        navigate("/registro-confirmado");
+      }
+
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
         const msg = err.response.data.message || "Erro ao registrar usuário.";

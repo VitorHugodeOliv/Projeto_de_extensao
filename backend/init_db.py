@@ -3,13 +3,6 @@ from db import db_config
 import bcrypt
 from seed_historias import inserir_historias_iniciais
 
-db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "senha123",
-    "database": "sistema_login"
-}
-
 try:
     conn = mysql.connector.connect(host=db_config["host"], user=db_config["user"], password=db_config["password"])
     cursor = conn.cursor()
@@ -31,6 +24,7 @@ try:
             idade INT,
             apelido VARCHAR(100),
             area_artistica VARCHAR(100),
+            conta_ativa BOOLEAN DEFAULT FALSE,
             data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -105,6 +99,19 @@ try:
         )
     """)
     print("Tabelas verificadas/criadas.")
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS TokensConfirmacao (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario_id INT NOT NULL,
+            token VARCHAR(255) UNIQUE NOT NULL,
+            data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            data_expiracao TIMESTAMP NOT NULL,
+            confirmado BOOLEAN DEFAULT FALSE,
+            FOREIGN KEY (usuario_id) REFERENCES Usuarios(id) ON DELETE CASCADE
+        )
+    """)
+    print("Tabela 'TokensConfirmacao' verificada/criada.")
 
     # ----------------- Admin padrão -----------------
     admins_padrao = [

@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_limiter.util import get_remote_address
 from middlewares.limiter_config import limiter
+from utils.email_utils import mail
 import logging
 from logging.handlers import RotatingFileHandler
 from utils.token_utils import validar_token
@@ -35,6 +36,16 @@ log_handler.setLevel(logging.ERROR)
 
 app.logger.addHandler(log_handler)
 app.logger.setLevel(logging.ERROR)
+
+app.config["MAIL_SERVER"] = settings.MAIL_SERVER
+app.config["MAIL_PORT"] = settings.MAIL_PORT
+app.config["MAIL_USE_TLS"] = settings.MAIL_USE_TLS
+app.config["MAIL_USE_SSL"] = settings.MAIL_USE_SSL
+app.config["MAIL_USERNAME"] = settings.MAIL_USERNAME
+app.config["MAIL_PASSWORD"] = settings.MAIL_PASSWORD
+app.config["MAIL_DEFAULT_SENDER"] = settings.MAIL_DEFAULT_SENDER
+
+mail.init_app(app)
 
 SECRET_KEY = settings.SECRET_KEY
 
