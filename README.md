@@ -2,10 +2,6 @@
 > Preservando histórias, conectando gerações 🌾
 
 <p align="center">
-  <img src="https://i.imgur.com/BxvDNye.png" alt="Banner Arquivo Digital de Memória Cultural" width="800"/>
-</p>
-
-<p align="center">
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white" /></a>
   <a href="https://flask.palletsprojects.com/"><img src="https://img.shields.io/badge/Flask-Framework-000000?logo=flask&logoColor=white" /></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black" /></a>
