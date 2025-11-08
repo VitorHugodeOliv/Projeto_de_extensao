@@ -167,7 +167,7 @@ Projeto de Extensão em **Engenharia de Software – Anhanguera**
 > “A cultura é a memória viva de um povo — e a tecnologia é a ponte que a faz atravessar o tempo.” 💚  
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Feito_com_💚_por-Vitor_Hugo-00a86b?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Feito_por-Vitor_Hugo-00a86b?style=for-the-badge" />
 </p>
 
 ---
