@@ -24,12 +24,50 @@
   border: 1px solid #ccc;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #fff;
 }
 
 .register-container input:focus {
   border-color: #00a86b;
   box-shadow: 0 0 5px rgba(0, 168, 107, 0.4);
   outline: none;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+}
+
+.input-group input:focus {
+  border-color: #00a86b;
+  box-shadow: 0 0 5px rgba(0, 168, 107, 0.4);
+  outline: none;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 35%;
+  transform: translateY(-50%);
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.eye-icon:hover {
+  color: #00a86b;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .register-container button {
@@ -66,5 +104,17 @@
   .register-container {
     padding: 1.5rem;
     margin: 2rem 1rem;
+  }
+
+  .register-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .input-group input {
+    font-size: 0.95rem;
+  }
+
+  .register-container button {
+    font-size: 1rem;
   }
 }
