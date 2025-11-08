@@ -42,15 +42,22 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
   const [filtroAtivo, setFiltroAtivo] = useState<Filtro>("em-analise");
   const [mensagem, setMensagem] = useState("");
   const [menuAberto, setMenuAberto] = useState(false);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [limite] = useState(6);
 
-  const carregarHistorias = async () => {
+  const carregarHistorias = async (page = 1) => {
     try {
-      const res = await apiAdmin.listarSolicitacoes();
+      const res = await apiAdmin.listarSolicitacoes(page, limite);
+
       const todas = res.historias || [];
       setHistorias(todas);
       aplicarFiltro(filtroAtivo, todas);
-      setMensagem("");
 
+      setPaginaAtual(res.page || 1);
+      setTotalPaginas(res.total_paginas || 1);
+
+      setMensagem("");
       toast.success("✅ Histórias carregadas com sucesso!");
     } catch (err) {
       console.error(err);
@@ -60,8 +67,8 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
   };
 
   useEffect(() => {
-    carregarHistorias();
-  }, []);
+    carregarHistorias(paginaAtual);
+  }, [paginaAtual]);
 
   const aplicarFiltro = (filtro: Filtro, base?: Historia[]) => {
     const lista = base || historias;
@@ -107,6 +114,14 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
     localStorage.removeItem("token");
     setToken(null);
     toast.info("👋 Sessão encerrada. Até logo!");
+  };
+
+  const proximaPagina = () => {
+    if (paginaAtual < totalPaginas) setPaginaAtual(paginaAtual + 1);
+  };
+
+  const paginaAnterior = () => {
+    if (paginaAtual > 1) setPaginaAtual(paginaAtual - 1);
   };
 
   return (
@@ -172,49 +187,71 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
         {historiasFiltradas.length === 0 ? (
           <p className="sem-historias">Nenhuma história encontrada.</p>
         ) : (
-          <div className="admin-grid">
-            {historiasFiltradas.map((h) => {
-              const imagemPreview = h.arquivos?.find((a) =>
-                a.tipo.startsWith("image/")
-              )?.caminho;
+          <>
+            <div className="admin-grid">
+              {historiasFiltradas.map((h) => {
+                const imagemPreview = h.arquivos?.find((a) =>
+                  a.tipo.startsWith("image/")
+                )?.caminho;
 
-              return (
-                <div
-                  key={h.id}
-                  className="admin-card"
-                  onClick={() => (window.location.href = `/admin-card/${h.id}`)}
-                >
-                  {imagemPreview ? (
-                    <img
-                      src={`http://localhost:5000/${imagemPreview}`}
-                      alt={h.titulo}
-                      className="card-thumb"
-                    />
-                  ) : (
-                    <div className="no-thumb">Sem imagem</div>
-                  )}
+                return (
+                  <div
+                    key={h.id}
+                    className="admin-card"
+                    onClick={() => (window.location.href = `/admin-card/${h.id}`)}
+                  >
+                    {imagemPreview ? (
+                      <img
+                        src={`http://localhost:5000/${imagemPreview}`}
+                        alt={h.titulo}
+                        className="card-thumb"
+                      />
+                    ) : (
+                      <div className="no-thumb">Sem imagem</div>
+                    )}
 
-                  <div className="card-body">
-                    <h3 className="card-title">{h.titulo}</h3>
-                    <p>
-                      <strong>Proponente:</strong> {h.nome_usuario}
-                    </p>
-                    <p>
-                      <strong>Data:</strong>{" "}
-                      {new Date(h.data_criacao).toLocaleDateString("pt-BR")}
-                    </p>
-                    <span
-                      className={`status-badge ${h.status
-                        .replace(" ", "-")
-                        .toLowerCase()}`}
-                    >
-                      {h.status}
-                    </span>
+                    <div className="card-body">
+                      <h3 className="card-title">{h.titulo}</h3>
+                      <p>
+                        <strong>Proponente:</strong> {h.nome_usuario}
+                      </p>
+                      <p>
+                        <strong>Data:</strong>{" "}
+                        {new Date(h.data_criacao).toLocaleDateString("pt-BR")}
+                      </p>
+                      <span
+                        className={`status-badge ${h.status
+                          .replace(" ", "-")
+                          .toLowerCase()}`}
+                      >
+                        {h.status}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+
+            <div className="paginacao">
+              <button
+                onClick={paginaAnterior}
+                disabled={paginaAtual === 1}
+                className="btn-paginacao"
+              >
+                ← Anterior
+              </button>
+              <span>
+                Página {paginaAtual} de {totalPaginas}
+              </span>
+              <button
+                onClick={proximaPagina}
+                disabled={paginaAtual === totalPaginas}
+                className="btn-paginacao"
+              >
+                Próxima →
+              </button>
+            </div>
+          </>
         )}
       </main>
     </div>

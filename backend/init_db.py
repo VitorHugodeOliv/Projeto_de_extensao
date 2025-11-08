@@ -134,15 +134,25 @@ try:
 
     for nome, email, senha in admins_padrao:
         senha_hash = bcrypt.hashpw(senha.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
         cursor.execute("SELECT id FROM Usuarios WHERE email = %s", (email,))
-        if cursor.fetchone() is None:
+        existente = cursor.fetchone()
+
+        if existente is None:
             cursor.execute(
-                "INSERT INTO Usuarios (nome, email, senha, tipo_usuario) VALUES (%s, %s, %s, %s)",
-                (nome, email, senha_hash, "admin")
+                """
+                INSERT INTO Usuarios (nome, email, senha, tipo_usuario, conta_ativa)
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (nome, email, senha_hash, "admin", True)
             )
-            print(f"Usuário admin '{nome}' criado ({email}).")
+            print(f"✅ Usuário admin '{nome}' criado ({email}) e conta ativada.")
         else:
-            print(f"Usuário admin '{email}' já existe.")
+            cursor.execute(
+                "UPDATE Usuarios SET conta_ativa = TRUE, tipo_usuario = 'admin' WHERE email = %s",
+                (email,)
+            )
+            print(f"ℹ️ Usuário admin '{email}' já existia — conta ativada e tipo garantido como 'admin'.")
 
     categorias_iniciais = [
         ("Teatro", "Histórias relacionadas a teatro e performances."),

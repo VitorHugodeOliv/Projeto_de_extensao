@@ -90,11 +90,41 @@
   margin-top: 1rem;
 }
 
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.btn-paginacao {
+  background: #009170;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-paginacao:hover:not(:disabled) {
+  background: #007a5b;
+}
+
+.btn-paginacao:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  color: #666;
+}
+
 @keyframes fadeSlideIn {
   0% {
     opacity: 0;
     transform: translateY(15px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -104,7 +134,7 @@
 .admin-card {
   background: #fff;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   overflow: hidden;
   animation: fadeSlideIn 0.4s ease forwards;
@@ -113,7 +143,7 @@
 
 .admin-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
 }
 
 .card-thumb {
@@ -153,10 +183,18 @@
   font-weight: bold;
 }
 
-.status-badge.aprovada { background: #2ecc71; }
+.status-badge.aprovada {
+  background: #2ecc71;
+}
+
 .status-badge.em-análise,
-.status-badge.pendente { background: #f39c12; }
-.status-badge.rejeitada { background: #e74c3c; }
+.status-badge.pendente {
+  background: #f39c12;
+}
+
+.status-badge.rejeitada {
+  background: #e74c3c;
+}
 
 .admin-message {
   background: #fff3cd;

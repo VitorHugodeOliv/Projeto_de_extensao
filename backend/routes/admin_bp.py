@@ -33,10 +33,25 @@ def listar_solicitacoes():
     if not usuario:
         return jsonify({"message": "Acesso negado: apenas administradores podem acessar esta rota."}), 403
 
+    try:
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 10))
+    except ValueError:
+        return jsonify({"message": "Parâmetros de paginação inválidos."}), 400
+
+    if page < 1 or limit < 1:
+        return jsonify({"message": "Parâmetros de paginação devem ser maiores que zero."}), 400
+
+    offset = (page - 1) * limit
+
     conn = conectar()
     cursor = conn.cursor(dictionary=True)
 
-    cursor.execute("""
+    cursor.execute("SELECT COUNT(*) AS total FROM Historias")
+    total = cursor.fetchone()["total"]
+    total_paginas = (total + limit - 1) // limit
+
+    cursor.execute(f"""
         SELECT 
             h.id,
             h.titulo,
@@ -58,8 +73,9 @@ def listar_solicitacoes():
         JOIN Usuarios u ON h.proponente = u.id
         LEFT JOIN Arquivos a ON h.id = a.historia_id
         ORDER BY h.data_criacao DESC
-    """)
-    
+        LIMIT %s OFFSET %s
+    """, (limit, offset))
+
     registros = cursor.fetchall()
 
     historias = {}
@@ -93,7 +109,10 @@ def listar_solicitacoes():
 
     return jsonify({
         "message": "Solicitações recuperadas com sucesso.",
-        "total": len(historias),
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "total_paginas": total_paginas,
         "historias": list(historias.values())
     }), 200
 

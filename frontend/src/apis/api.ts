@@ -60,9 +60,13 @@ export const apiHistorias = {
 // ======================
 
 export const apiAdmin = {
-  listarSolicitacoes: async () => {
-    const res = await api.get("/admin/solicitacoes");
-    return res.data;
+  listarSolicitacoes: async (page = 1, limit = 6) => {
+    const res = await fetch(`http://localhost:5000/admin/solicitacoes?page=${page}&limit=${limit}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    return res.json();
   },
 
   aprovarHistoria: async (historiaId: number) => {

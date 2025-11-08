@@ -76,7 +76,7 @@
 
 | Fase | Percentual estimado |
 |------|---------------------|
-| 🧱 Estabilidade | 60% |
+| 🧱 Estabilidade | 100% |
 | ⚙️ Funcionalidade Admin | 100% |
 | 🎨 UX e Frontend | 100% |
 | 🧩 Estrutura | 40% |
