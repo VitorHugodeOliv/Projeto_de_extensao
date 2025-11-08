@@ -172,6 +172,3 @@ Projeto de Extensão em **Engenharia de Software – Anhanguera**
 
 ---
 
-## 🪪 Licença
-Distribuído sob a **Licença MIT**.  
-Veja o arquivo `LICENSE` para mais detalhes.
