@@ -40,19 +40,6 @@ export const apiHistorias = {
     const res = await api.post("/historias", dados);
     return res.data;
   },
-
-  uploadMidias: async (historiaId: number, arquivos: FileList) => {
-    const formData = new FormData();
-    for (let i = 0; i < arquivos.length; i++) {
-      formData.append("arquivos", arquivos[i]);
-    }
-    formData.append("historia_id", String(historiaId));
-
-    const res = await api.post("/upload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return res.data;
-  },
 };
 
 // ======================

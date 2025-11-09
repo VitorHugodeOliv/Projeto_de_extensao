@@ -6,6 +6,7 @@ import PreviewMidias from "../utils/PreviewMidias";
 import { validarArquivos } from "../utils/validarArquivos";
 import { apiHistorias } from "../apis/api";
 import api from "../apis/apiAxios";
+import { uploadMidias } from "../utils/MidiaUploads/uploadMidias";
 import "./css/cssHistoryRegister.css";
 
 interface Props {
@@ -121,7 +122,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
         setIsUploading(true);
         setUploadProgress(0);
 
-        await apiHistorias.uploadMidias(historiaId, midias);
+        await uploadMidias(historiaId, midias, setUploadProgress, token);
 
         setIsUploading(false);
         setUploadProgress(100);
