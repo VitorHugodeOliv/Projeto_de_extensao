@@ -3,15 +3,13 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { apiAuth } from "../apis/api";
 import "./css/cssLogin.css";
+import { useAuth } from "../store/authStore";
 
-interface Props {
-  setToken: (token: string | null) => void;
-}
-
-const Login: React.FC<Props> = ({ setToken }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const navigate = useNavigate();
+  const { setTokens } = useAuth();
 
   const handleNavigate = () => {
     navigate("/dashboard");
@@ -25,9 +23,7 @@ const Login: React.FC<Props> = ({ setToken }) => {
       const refreshToken = res.refresh_token;
 
       if (accessToken) {
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        setToken(accessToken);
+        setTokens({ accessToken, refreshToken });
         toast.success("Login realizado com sucesso! 🎉");
       }
     } catch (err: any) {

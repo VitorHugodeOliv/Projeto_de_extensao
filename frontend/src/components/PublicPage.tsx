@@ -6,6 +6,8 @@ import coracaoVazio from "../assets/icons/heart-outline.svg";
 import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
 import ModalHistoria from "../components/ModalHistoria";
 import "./css/cssPublicPage.css";
+import { useAuth } from "../store/authStore";
+import { API_BASE_URL } from "../apis/config";
 
 interface Arquivo {
   tipo: string;
@@ -49,10 +51,10 @@ const PublicPage: React.FC = () => {
   const [categoriaFiltro, setCategoriaFiltro] = useState("todas");
   const [historiaSelecionada, setHistoriaSelecionada] = useState<number | null>(null);
 
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
 
-  const { curtido, handleCurtir, setCurtido } = useInteracoesHistoria(undefined, token);
+  const { curtido, handleCurtir, setCurtido } = useInteracoesHistoria();
 
   useEffect(() => {
     const fetchHistorias = async () => {
@@ -60,15 +62,14 @@ const PublicPage: React.FC = () => {
         const res = await api.get<Historia[]>("/historias");
         const aprovadas = res.data.filter((h) => h.status === "Aprovada");
         setHistorias(aprovadas);
-        console.log(aprovadas)
 
         const mapaCurtido: Record<number, boolean> = {};
         const mapaCurtidas: Record<number, number> = {};
 
         for (const h of aprovadas) {
           try {
-            const response = await fetch(`http://localhost:5000/historias/${h.id}/curtidas`, {
-              headers: token ? { Authorization: `Bearer ${token}` } : {},
+            const response = await fetch(`${API_BASE_URL}/historias/${h.id}/curtidas`, {
+              headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
             });
             const data = await response.json();
             mapaCurtido[h.id] = data.usuario_curtiu || false;
@@ -98,7 +99,7 @@ const PublicPage: React.FC = () => {
     };
 
     fetchHistorias();
-  }, [token, setCurtido]);
+  }, [accessToken, setCurtido]);
 
   const historiasFiltradas = historias
     .filter((h) => categoriaFiltro === "todas" || h.categoria_nome === categoriaFiltro)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../../apis/apiAxios";
 import { toast } from "react-toastify";
 import "../css/cssPerfil/cssPerfilUsuario.css";
+import { useAuth } from "../../store/authStore";
 
 interface Usuario {
   nome: string;
@@ -18,14 +19,12 @@ const PerfilUsuario: React.FC = () => {
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [editando, setEditando] = useState(false);
   const [carregando, setCarregando] = useState(true);
-  const token = localStorage.getItem("token");
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     const fetchPerfil = async () => {
       try {
-        const res = await api.get("/perfil", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/perfil");
         setUsuario(res.data);
       } catch (err) {
         console.error("Erro ao carregar perfil:", err);
@@ -34,14 +33,14 @@ const PerfilUsuario: React.FC = () => {
         setCarregando(false);
       }
     };
-    fetchPerfil();
-  }, [token]);
+    if (accessToken) {
+      fetchPerfil();
+    }
+  }, [accessToken]);
 
   const handleSalvar = async () => {
     try {
-      const res = await api.put("/perfil", usuario, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.put("/perfil", usuario);
       toast.success(res.data.message || "Alterações salvas com sucesso! 🎉");
       setEditando(false);
     } catch (err) {

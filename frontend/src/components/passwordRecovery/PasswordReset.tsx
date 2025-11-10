@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import api from "../../apis/apiAxios";
 import { Eye, EyeOff } from "lucide-react";
 import "../css/cssPasswordReset.css";
+import { useAuth } from "../../store/authStore";
 
 const ResetarSenha: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -13,13 +14,13 @@ const ResetarSenha: React.FC = () => {
   const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
 
   useEffect(() => {
-    const tokenLocal = localStorage.getItem("token");
-    if (tokenLocal) {
+    if (accessToken) {
       navigate("/dashboard");
     }
-  }, [navigate]);
+  }, [accessToken, navigate]);
 
   const handleReset = async () => {
     if (!senha || !confirmarSenha) {

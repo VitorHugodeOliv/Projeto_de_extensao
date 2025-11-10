@@ -1,23 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import HistoryRegister from "../components/HistoryRegister";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
-function RotaHistoryRegister () {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
+function RotaHistoryRegister() {
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-  
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
     }
-  }, [token, navigate]);
-  
-    return (
-        <div>
-            {token && <HistoryRegister token={token} setToken={setToken} />}
-        </div>
-    )
+  }, [accessToken, navigate]);
+
+  return <div>{accessToken && <HistoryRegister />}</div>;
 }
 
 export default RotaHistoryRegister;

@@ -8,18 +8,14 @@ import { apiHistorias } from "../apis/api";
 import api from "../apis/apiAxios";
 import { uploadMidias } from "../utils/MidiaUploads/uploadMidias";
 import "./css/cssHistoryRegister.css";
-
-interface Props {
-  token: string;
-  setToken: (token: string | null) => void;
-}
+import { useAuth } from "../store/authStore";
 
 interface Categoria {
   id: number;
   nome: string;
 }
 
-const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
+const HistoryRegister: React.FC = () => {
   const [titulo, setTitulo] = useState("");
   const [subtitulo, setSubtitulo] = useState("");
   const [autorArtista, setAutorArtista] = useState("");
@@ -32,15 +28,16 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   const [isUploading, setIsUploading] = useState(false);
 
   const navigate = useNavigate();
+  const { accessToken, logout } = useAuth();
 
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
       setTimeout(() => {
         toast.error("Você precisa estar logado para enviar uma história.");
       }, 300);
     }
-  }, [token, navigate]);
+  }, [accessToken, navigate]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -122,7 +119,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
         setIsUploading(true);
         setUploadProgress(0);
 
-        await uploadMidias(historiaId, midias, setUploadProgress, token);
+        await uploadMidias(historiaId, midias, setUploadProgress);
 
         setIsUploading(false);
         setUploadProgress(100);
@@ -153,8 +150,7 @@ const HistoryRegister: React.FC<Props> = ({ token, setToken }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    logout();
     toast.info("Sessão encerrada. Até logo!");
     navigate("/login");
   };

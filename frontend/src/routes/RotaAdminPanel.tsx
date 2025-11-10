@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AdminPainel from "../components/AdminPanel";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
+function RotaAdminPainel() {
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
-function RotaAdminPainel () {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-
-  const navigate = useNavigate()
-  
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [accessToken, navigate]);
 
-    return (
-        <div>
-          {token && <AdminPainel token={token} setToken={setToken} />}
-        </div>
-    );
-
-};
+  return <div>{accessToken && <AdminPainel />}</div>;
+}
 
 export default RotaAdminPainel;

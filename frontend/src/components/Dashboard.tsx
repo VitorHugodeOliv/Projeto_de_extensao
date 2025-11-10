@@ -8,25 +8,24 @@ import PainelAdmin from "./perfil/PainelAdmin";
 import LogsAdmin from "./perfil/LogsAdmin"
 import api from "../apis/apiAxios";
 import "./css/cssPerfil/cssDashboard.css";
+import { useAuth } from "../store/authStore";
 
 const Dashboard: React.FC = () => {
   const [abaAtiva, setAbaAtiva] = useState<string>("perfil");
   const [usuario, setUsuario] = useState<any>(null);
   const [menuAberto, setMenuAberto] = useState(false);
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
       return;
     }
 
     const fetchDados = async () => {
       try {
-        const res = await api.get("/dashboard", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/dashboard");
         setUsuario(res.data);
       } catch (err) {
         console.error("Erro ao carregar dashboard:", err);
@@ -35,7 +34,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchDados();
-  }, [navigate]);
+  }, [accessToken, navigate]);
 
   const renderConteudo = () => {
     switch (abaAtiva) {

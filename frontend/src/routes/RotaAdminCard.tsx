@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import AdminCard from "../components/AdminCard";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
-
-function RotaAdminCard () {
-  const [token] = useState<string | null>(localStorage.getItem("token"));
+function RotaAdminCard() {
+  const { accessToken } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [accessToken, navigate]);
 
-  return <div>{token && <AdminCard token={token} />}</div>;
+  return <div>{accessToken && <AdminCard />}</div>;
 }
 
 export default RotaAdminCard;

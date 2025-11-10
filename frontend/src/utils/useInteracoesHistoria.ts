@@ -6,6 +6,8 @@ import {
   comentarHistoria,
 } from "../apis/apiAxios";
 import { toast } from "react-toastify";
+import { useAuth } from "../store/authStore";
+import { API_BASE_URL } from "../apis/config";
 
 const likeSound = new Audio("../assets/sons/like.wav");
 const unlikeSound = new Audio("../assets/sons/unlike.wav");
@@ -19,21 +21,21 @@ interface Comentario {
   data_criacao: string;
 }
 
-export function useInteracoesHistoria(id?: number, token?: string | null) {
+export function useInteracoesHistoria(id?: number) {
   const [curtidas, setCurtidas] = useState<Record<number, number>>({});
   const [curtido, setCurtido] = useState<Record<number, boolean>>({});
   const [comentarios, setComentarios] = useState<Record<number, Comentario[]>>({});
   const [novoComentario, setNovoComentario] = useState("");
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const { accessToken } = useAuth();
 
   useEffect(() => {
     if (typeof id !== "number" || isNaN(id)) return;
 
     const carregarInteracoes = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`http://localhost:5000/historias/${id}/curtidas`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        const res = await fetch(`${API_BASE_URL}/historias/${id}/curtidas`, {
+          headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
         });
         const data = await res.json();
 
@@ -49,7 +51,7 @@ export function useInteracoesHistoria(id?: number, token?: string | null) {
     };
 
     carregarInteracoes();
-  }, [id]);
+  }, [id, accessToken]);
 
   const handleCurtir = async (historiaId?: number) => {
     const targetId = historiaId ?? id;
@@ -58,7 +60,7 @@ export function useInteracoesHistoria(id?: number, token?: string | null) {
       return;
     }
 
-    if (!token) {
+    if (!accessToken) {
       toast.info("🔒 Faça login para curtir histórias ❤️");
       setMensagem("Faça login para curtir histórias ❤️");
       return;
@@ -94,7 +96,7 @@ export function useInteracoesHistoria(id?: number, token?: string | null) {
     const targetId = historiaId ?? id;
     if (typeof targetId !== "number" || isNaN(targetId)) return;
 
-    if (!token) {
+    if (!accessToken) {
       toast.info("💬 Faça login para comentar histórias.");
       setMensagem("Faça login para comentar 💬");
       return;

@@ -4,6 +4,7 @@ import coracaoCheio from "../assets/icons/heart-filled.svg";
 import coracaoVazio from "../assets/icons/heart-outline.svg";
 import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
 import "./css/cssModalHistoria.css";
+import { API_BASE_URL } from "../apis/config";
 
 interface Arquivo {
   tipo: string;
@@ -30,7 +31,6 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
   const [carregando, setCarregando] = useState(true);
   const [midiaAtual, setMidiaAtual] = useState(0);
   const [expandida, setExpandida] = useState(false);
-  const token = localStorage.getItem("token");
 
   const {
     curtidas,
@@ -42,7 +42,7 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
     setNovoComentario,
     handleCurtir,
     handleComentar,
-  } = useInteracoesHistoria(historiaId, token);
+  } = useInteracoesHistoria(historiaId);
 
   useEffect(() => {
     const carregarHistoria = async () => {
@@ -132,7 +132,7 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
             let url = arq.url.trim();
             if (!url.startsWith("/")) url = "/" + url;
             if (!url.startsWith("/uploads")) url = "/uploads" + url;
-            const cleanUrl = `http://localhost:5000${url}`.replace(/([^:]\/)\/+/g, "$1");
+            const cleanUrl = `${API_BASE_URL}${url}`.replace(/([^:]\/)\/+/g, "$1");
 
             if (i !== midiaAtual) return null;
 
@@ -181,7 +181,7 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
                 let url = arq.url.trim();
                 if (!url.startsWith("/")) url = "/" + url;
                 if (!url.startsWith("/uploads")) url = "/uploads" + url;
-                const cleanUrl = `http://localhost:5000${url}`.replace(/([^:]\/)\/+/g, "$1");
+                const cleanUrl = `${API_BASE_URL}${url}`.replace(/([^:]\/)\/+/g, "$1");
 
                 if (tipo.startsWith("image") || ["png", "jpg", "jpeg", "gif"].includes(tipo)) {
                 return <img src={cleanUrl} alt="Imagem expandida" className="midia-expandida" />;
