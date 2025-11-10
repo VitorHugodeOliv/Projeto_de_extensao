@@ -3,8 +3,9 @@ import api from "../apis/apiAxios";
 import coracaoCheio from "../assets/icons/heart-filled.svg";
 import coracaoVazio from "../assets/icons/heart-outline.svg";
 import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
-import "./css/cssModalHistoria.css";
 import { API_BASE_URL } from "../apis/config";
+import { useAuth } from "../store/authStore";
+import "./css/cssModalHistoria.css";
 
 interface Arquivo {
   tipo: string;
@@ -31,6 +32,7 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
   const [carregando, setCarregando] = useState(true);
   const [midiaAtual, setMidiaAtual] = useState(0);
   const [expandida, setExpandida] = useState(false);
+  const { accessToken } = useAuth();
 
   const {
     curtidas,
@@ -234,7 +236,7 @@ const ModalHistoria: React.FC<ModalHistoriaProps> = ({ historiaId, onClose }) =>
             ))
           )}
 
-          {token && (
+          {accessToken && (
             <div className="novo-comentario">
               <textarea
                 placeholder="Escreva um comentário..."

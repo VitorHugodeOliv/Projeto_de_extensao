@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
       case "perfil":
         return <PerfilUsuario />;
       case "historico":
-        return <HistoricoUsuario usuario={usuario} />;
+        return <HistoricoUsuario />;
       case "curtidas":
         return <HistoricoCurtidas usuarioId={usuario.user_id} />;
       case "config":

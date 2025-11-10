@@ -1,4 +1,4 @@
-import { PropsWithChildren, useEffect } from "react";
+import { type PropsWithChildren, useEffect } from "react";
 import { apiAuth } from "../apis/api";
 import { authStore, useAuth } from "../store/authStore";
 

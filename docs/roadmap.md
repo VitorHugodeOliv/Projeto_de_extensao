@@ -43,7 +43,7 @@
 | Tarefa | Status | Descrição |
 |--------|:------:|-----------|
 | 📦 Separar chamadas Axios em `api.ts` | ✅ | Centralizar endpoints. |
-| 🌍 Context API / Zustand | ⬜ | Gerenciar token e dados globalmente. |
+| 🌍 Context API / Zustand | ✅ | Gerenciar token e dados globalmente. |
 | 🎨 Migrar CSS para módulos | ⬜ | Isolar estilos e evitar conflitos. |
 | 🧪 Testes com Pytest (back) e RTL (front) | ⚠️ | Já iniciados; expandir cobertura. |
 | 🧰 Scripts de inicialização (`setup.sh`) | ⬜ | Criar scripts para subir banco + servidor com 1 comando. |
