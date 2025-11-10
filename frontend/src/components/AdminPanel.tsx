@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { apiAdmin } from "../apis/api";
 import { toast } from "react-toastify";
 import "./css/cssAdminPanel.css";
+import { useAuth } from "../store/authStore";
 
 interface Arquivo {
   id: number;
@@ -23,11 +24,6 @@ interface Historia {
   arquivos: Arquivo[];
 }
 
-interface Props {
-  token: string;
-  setToken: (token: string | null) => void;
-}
-
 type Filtro =
   | "em-analise"
   | "todas"
@@ -36,7 +32,7 @@ type Filtro =
   | "mais-recentes"
   | "mais-antigas";
 
-const AdminPanel: React.FC<Props> = ({ setToken }) => {
+const AdminPanel: React.FC = () => {
   const [historias, setHistorias] = useState<Historia[]>([]);
   const [historiasFiltradas, setHistoriasFiltradas] = useState<Historia[]>([]);
   const [filtroAtivo, setFiltroAtivo] = useState<Filtro>("em-analise");
@@ -45,6 +41,7 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [limite] = useState(6);
+  const { logout } = useAuth();
 
   const carregarHistorias = async (page = 1) => {
     try {
@@ -111,8 +108,7 @@ const AdminPanel: React.FC<Props> = ({ setToken }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+    logout();
     toast.info("👋 Sessão encerrada. Até logo!");
   };
 

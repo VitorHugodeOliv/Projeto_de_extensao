@@ -1,11 +1,12 @@
 import axios from "axios";
 import type { AxiosProgressEvent } from "axios";
+import { API_BASE_URL } from "../../apis/config";
+import { authStore } from "../../store/authStore";
 
 export const uploadMidias = async (
   historiaId: number,
   arquivos: FileList,
-  onProgress: (percent: number) => void,
-  token?: string
+  onProgress: (percent: number) => void
 ) => {
   const formData = new FormData();
   for (let i = 0; i < arquivos.length; i++) {
@@ -14,8 +15,9 @@ export const uploadMidias = async (
   formData.append("historia_id", String(historiaId));
 
   const controller = new AbortController();
+  const token = authStore.getState().accessToken;
 
-  const res = await axios.post("http://localhost:5000/upload", formData, {
+  const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),

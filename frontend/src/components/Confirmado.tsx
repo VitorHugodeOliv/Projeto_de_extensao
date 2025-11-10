@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "../components/css/cssAdminPanel.css";
+import { useAuth } from "../store/authStore";
 
 const Confirmado: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setTokens } = useAuth();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -12,8 +14,7 @@ const Confirmado: React.FC = () => {
     const refresh = params.get("refresh");
 
     if (access && refresh) {
-      localStorage.setItem("token", access);
-      localStorage.setItem("refresh_token", refresh);
+      setTokens({ accessToken: access, refreshToken: refresh });
 
       setTimeout(() => navigate("/dashboard"), 2000);
     } else {

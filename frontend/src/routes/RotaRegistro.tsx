@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Register from "../components/Register";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
-function RotaRegistro () {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-
-  const navigate = useNavigate()
+function RotaRegistro() {
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
-      navigate("/dashboard")
+    if (accessToken) {
+      navigate("/dashboard");
     }
-  })
+  }, [accessToken, navigate]);
 
-  return (
-    <div>
-      {!token && (
-        <>
-          <Register setToken={setToken} />
-        </>
-      )}
-    </div>
-  );
-};
+  return <div>{!accessToken && <Register />}</div>;
+}
 
-export default RotaRegistro
+export default RotaRegistro;

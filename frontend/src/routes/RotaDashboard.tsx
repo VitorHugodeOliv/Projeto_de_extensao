@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Dashboard from "../components/Dashboard";
 import { useNavigate } from "react-router";
+import { useAuth } from "../store/authStore";
 
+function RotaDashboard() {
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
-function RotaDashboard () {
-  const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-
-  const navigate = useNavigate()
-  
   useEffect(() => {
-    if (!token) {
+    if (!accessToken) {
       navigate("/login");
     }
-  }, [token, navigate]);
+  }, [accessToken, navigate]);
 
-    return (
-        <div>
-          {token && <Dashboard token={token} setToken={setToken} />}
-        </div>
-    );
-
-};
+  return <div>{accessToken && <Dashboard />}</div>;
+}
 
 export default RotaDashboard;

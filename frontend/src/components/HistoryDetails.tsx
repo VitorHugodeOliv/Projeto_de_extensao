@@ -5,6 +5,7 @@ import coracaoCheio from "../assets/icons/heart-filled.svg";
 import coracaoVazio from "../assets/icons/heart-outline.svg";
 import "./css/cssHistoriaDetalhes.css";
 import { useInteracoesHistoria } from "../utils/useInteracoesHistoria";
+import { useAuth } from "../store/authStore";
 
 interface Arquivo {
   tipo: string;
@@ -26,7 +27,7 @@ const HistoryDetails: React.FC = () => {
   const historiaId = Number(id);
   const [historia, setHistoria] = useState<Historia | null>(null);
   const [carregando, setCarregando] = useState(true);
-  const token = localStorage.getItem("token");
+  const { accessToken } = useAuth();
 
   const {
     curtidas,
@@ -38,7 +39,7 @@ const HistoryDetails: React.FC = () => {
     setNovoComentario,
     handleCurtir,
     handleComentar,
-  } = useInteracoesHistoria(historiaId, token);
+  } = useInteracoesHistoria(historiaId);
 
   useEffect(() => {
     const carregarHistoria = async () => {
@@ -135,7 +136,7 @@ const HistoryDetails: React.FC = () => {
           ))
         )}
 
-        {token && (
+        {accessToken && (
           <div className="novo-comentario">
             <textarea
               placeholder="Escreva um comentário..."

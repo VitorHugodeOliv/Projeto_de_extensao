@@ -1,4 +1,6 @@
 import api from "./apiAxios";
+import { API_BASE_URL } from "./config";
+import { authStore } from "../store/authStore";
 
 // ======================
 //  LOGIN & USUÁRIOS
@@ -48,11 +50,17 @@ export const apiHistorias = {
 
 export const apiAdmin = {
   listarSolicitacoes: async (page = 1, limit = 6) => {
-    const res = await fetch(`http://localhost:5000/admin/solicitacoes?page=${page}&limit=${limit}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const token = authStore.getState().accessToken;
+    if (!token) {
+      throw new Error("Usuário não autenticado");
+    }
+
+    const res = await fetch(
+      `${API_BASE_URL}/admin/solicitacoes?page=${page}&limit=${limit}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return res.json();
   },
 

@@ -1,12 +1,14 @@
 import axios from "axios";
+import { authStore } from "../store/authStore";
+import { API_BASE_URL } from "./config";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: API_BASE_URL,
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = authStore.getState().accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -29,29 +31,24 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) {
-          console.warn("Sem refresh token disponível, usuário deve logar novamente.");
-          throw new Error("Sem refresh token");
+        const newAccessToken = await authStore.refreshTokens();
+        if (!newAccessToken) {
+          throw new Error("Sem token de acesso");
         }
 
-        const res = await axios.post("http://localhost:5000/refresh", {
-          refresh_token: refreshToken,
-        });
-
-        const newAccessToken = res.data.access_token;
-
-        localStorage.setItem("token", newAccessToken);
         api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
-
+        originalRequest.headers = originalRequest.headers ?? {};
         originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         console.error("Erro ao renovar token:", refreshError);
-        localStorage.removeItem("token");
-        localStorage.removeItem("refreshToken");
+        authStore.logout();
         window.location.href = "/login";
       }
+    }
+
+    if (error.response?.status === 401) {
+      authStore.logout();
     }
 
     return Promise.reject(error);

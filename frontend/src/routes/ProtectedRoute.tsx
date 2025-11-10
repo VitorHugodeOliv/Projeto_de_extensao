@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import { useAuth } from "../store/authStore";
 
 interface DecodedToken {
   id: number;
@@ -15,25 +16,28 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requerAdmin = false }) => {
-  const token = localStorage.getItem("token");
+  const { accessToken, user, logout } = useAuth();
 
-  if (!token) return <Navigate to="/login" replace />;
+  if (!accessToken) return <Navigate to="/login" replace />;
 
   try {
-    const decoded: DecodedToken = jwtDecode(token);
+    const decoded: DecodedToken = jwtDecode(accessToken);
     const agora = Date.now() / 1000;
 
     if (decoded.exp < agora) {
-      localStorage.removeItem("token");
+      logout();
       return <Navigate to="/login" replace />;
     }
 
-    if (requerAdmin && decoded.tipo_usuario !== "admin") {
+    const tipoUsuario = user?.tipo_usuario ?? decoded.tipo_usuario;
+
+    if (requerAdmin && tipoUsuario !== "admin") {
       return <Navigate to="/dashboard" replace />;
     }
 
     return <>{children}</>;
   } catch {
+    logout();
     return <Navigate to="/login" replace />;
   }
 };

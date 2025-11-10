@@ -5,12 +5,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import "./css/cssRegister.css";
+import { useAuth } from "../store/authStore";
 
-interface Props {
-  setToken: (token: string | null) => void;
-}
-
-const Register: React.FC<Props> = ({ setToken }) => {
+const Register: React.FC = () => {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -22,6 +19,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
   const [apelido, setApelido] = useState("");
   const [areaArtistica, setAreaArtistica] = useState("");
   const navigate = useNavigate();
+  const { setTokens } = useAuth();
 
   const handleRegister = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -47,7 +45,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
     }
 
     try {
-      const res = await api.post("http://localhost:5000/register", {
+      const res = await api.post("/register", {
         nome,
         email,
         senha,
@@ -64,9 +62,7 @@ const Register: React.FC<Props> = ({ setToken }) => {
       const refreshToken = res.data.refresh_token;
 
       if (accessToken) {
-        localStorage.setItem("token", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        setToken(accessToken);
+        setTokens({ accessToken, refreshToken });
       }
 
       if (res.status === 201) {
