@@ -19,6 +19,7 @@ import ForgottenPassword from "./components/passwordRecovery/ForgottenPassword";
 import PasswordReset from "./components/passwordRecovery/PasswordReset";
 
 const App: React.FC = () => {
+  // vou mudar aqui só pelo commit
 
   return (
       <>
