@@ -1,0 +1,41 @@
+services:
+  db:
+    image: mysql:8
+    container_name: memoria-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: sistema_login
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: memoria-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - db
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    environment:
+      FLASK_ENV: development
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: memoria-frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - backend

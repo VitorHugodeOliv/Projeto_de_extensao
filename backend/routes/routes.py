@@ -144,5 +144,17 @@ def ratelimit_handler(e):
         "details": str(e.description)
     }), 429
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(
+        os.path.join(app.root_path, 'static'),
+        'favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
+
+@app.route("/")
+def index():
+    return {"message": "API do Sistema Cultural está online!"}
+
 if __name__ == "__main__":
     app.run(debug=True)
