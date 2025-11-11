@@ -124,7 +124,38 @@ npm run dev
 ```
 ➡️ Aplicação: `http://localhost:5173`
 
-> Ajuste o endpoint da API em `frontend/src/apis/apiAxios.ts` caso use outra porta.
+> Ajuste a variável `VITE_API_BASE_URL` (por exemplo, em um arquivo `.env`) caso utilize outra porta para o backend.
+
+---
+
+### 🐳 **Ambiente Completo com Docker Compose**
+
+Requisitos:
+
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose Plugin](https://docs.docker.com/compose/install/)
+
+Passo a passo:
+
+```bash
+docker compose up --build
+```
+
+O Compose criará três serviços:
+
+- `db`: banco MySQL 8 com persistência no volume `mysql_data`.
+- `backend`: API Flask exposta em `http://localhost:5000`, com volumes para logs e uploads.
+- `frontend`: Vite/React disponível em `http://localhost:5173`, consumindo o backend via `http://backend:5000` dentro da rede interna.
+
+Variáveis de ambiente sensíveis (por exemplo, credenciais de e-mail) podem ser alteradas no arquivo `docker-compose.yml` ou via `.env` externos conforme necessário.
+
+Para parar os serviços:
+
+```bash
+docker compose down
+```
+
+> O comando `docker compose down -v` também remove os volumes nomeados.
 
 ---
 
