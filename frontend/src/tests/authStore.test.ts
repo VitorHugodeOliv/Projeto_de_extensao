@@ -1,6 +1,6 @@
 import axios from "axios";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { authStore } from "../store/authStore";
+import { authStore } from "@lib/store/auth-store";
 
 vi.mock("axios");
 
