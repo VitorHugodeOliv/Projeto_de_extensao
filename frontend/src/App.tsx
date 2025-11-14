@@ -1,9 +1,8 @@
 import React from "react";
 import { Route, Routes } from "react-router";
-import ToastProvider from './utils/ToastProvider'
+import ToastProvider from './utils/ToastProvider';
 import RotaLogin from "./routes/RotaLogin";
 import RotaRegistro from "./routes/RotaRegistro";
-import RotaHomePage from "./routes/RotaHomePage";
 import RotaDashboard from "./routes/RotaDashboard";
 import RotaHistoryRegister from "./routes/RotaHistoryRegister";
 import RotaAdminPanel from "./routes/RotaAdminPanel";
@@ -17,15 +16,17 @@ import Confirmado from "./components/Confirmado";
 import ErroConfirmacao from "./components/ErroConfirmacao";
 import ForgottenPassword from "./components/passwordRecovery/ForgottenPassword";
 import PasswordReset from "./components/passwordRecovery/PasswordReset";
+import Teste from "./Pages/HomePage";
 
 const App: React.FC = () => {
   // vou mudar aqui só pelo commit
 
   return (
       <>
+        <ToastProvider/>
         <Routes>
-          <Route index element={<RotaHomePage />} />
           <Route path='/' element={<RotaHeader />}>
+            <Route index element={<Teste />} />
             <Route path="/historias" element={<RotaPublicPage />} />
             <Route path="/historia/:id" element={<HistoryDetails />} />
             <Route path="/registro" element={<RotaRegistro />} />
@@ -57,7 +58,6 @@ const App: React.FC = () => {
               </ProtectedRoute>} />
           </Route>
         </Routes>
-        <ToastProvider/>
     </>
   );
 };
