@@ -1,0 +1,67 @@
+.navbar {
+    width: 100%;
+    height: 7rem;
+    padding: 1.4rem 1.6rem;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-family: "Montserrat", serif;
+    font-size: 1.7rem;
+    font-style: italic;
+    line-height: 1.2;
+    font-weight: 300;
+}
+
+.separator {
+    height: 48px;
+    width: 1.5px;
+    background: #000;
+    opacity: 0.4;
+}
+
+.links {
+    display: flex;
+    gap: 1.4rem;
+}
+
+.link {
+    font-family: "Playfair Display", serif;
+    font-size: 2rem;
+    text-decoration: none;
+    color: #000;
+    transition: opacity 0.2s ease;
+}
+
+.link:hover {
+    opacity: 0.6;
+}
+
+
+@media (max-width: 480px) {
+    .navbar {
+        padding: 1.2rem 1.4rem;
+    }
+
+    .title {
+        font-size: 1.35rem;
+    }
+
+    .separator {
+        height: 30px;
+        width: 1.5px;
+        background: #000;
+        opacity: 0.4;
+    }
+
+    .links {
+        gap: 1rem;
+    }
+
+    .link {
+        font-size: 1.2rem;
+    }
+}
