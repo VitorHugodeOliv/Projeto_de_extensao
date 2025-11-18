@@ -7,7 +7,7 @@ export default function Navbar() {
       <div className={styles.title}>ARQUIVO<br />CULTURAL</div>
 
       <div className={styles.links}>
-        <Link className={styles.link} to="/galeria">Galeria</Link>
+        <Link className={styles.link} to="/historias">Galeria</Link>
 
         <div className={styles.separator}></div>
 

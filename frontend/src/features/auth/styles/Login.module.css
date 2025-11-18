@@ -1,0 +1,130 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  background: url("/imagensLogin.png") center/cover no-repeat;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.blurLayer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.55));
+  backdrop-filter: blur(12px);
+}
+
+.card {
+  position: relative;
+  width: 97%;
+  height: 270px;
+  max-width: 420px;
+  padding: 1.0rem;
+  border-radius: 22px;
+  bottom: 200px;
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  z-index: 2;
+}
+
+.backButton {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+
+  width: 10px;
+  height: 24px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.subtitle {
+  font-size: 0.71rem;
+  color: #ededed;
+  margin-bottom: 1.7rem;
+}
+
+.subtitle span {
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #2db2ff;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.9rem 0 0.3rem;
+  font-size: 0.7rem;
+  color: #d1d0d0;
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+}
+
+.separator::before,
+.separator::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  margin: 0 0.6rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.1rem;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 1rem;
+  outline: none;
+}
+
+.button {
+  width: 100%;
+  padding: 0.15rem;
+  background: #2d77c2;
+  color: #e0dfdf;
+  top: 30px;
+  border: none;
+  border-radius: 40px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.button:hover {
+  background: #0068cc;
+}
+
+.forgot {
+  margin-top: 1rem;
+  color: #e0e0e0;
+  cursor: pointer;
+}
