@@ -19,6 +19,5 @@ db_config = {
     "database": os.getenv("DB_NAME", "sistema_login"),
 }
 
-
 def conectar():
     return mysql.connector.connect(**db_config)

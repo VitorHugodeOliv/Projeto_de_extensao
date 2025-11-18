@@ -1,7 +1,14 @@
 import mysql.connector
+import sys
 from db import db_config
 import bcrypt
 from seed_historias import inserir_historias_iniciais
+
+rodar_somente_uma_vez = "--once" in sys.argv
+
+def ja_foi_inicializado(cursor):
+    cursor.execute("SHOW TABLES LIKE 'Usuarios'")
+    return cursor.fetchone() is not None
 
 try:
     conn = mysql.connector.connect(host=db_config["host"], user=db_config["user"], password=db_config["password"])
@@ -11,6 +18,13 @@ try:
     print("Banco de dados 'sistema_login' verificado/criado.")
     
     conn.database = "sistema_login"
+
+    if rodar_somente_uma_vez:
+        if ja_foi_inicializado(cursor):
+            print("init_db.py ignorado — banco já inicializado!")
+            sys.exit(0)
+
+    print("inicializando o banco.")
 
     # ----------------- Tabelas -----------------
     cursor.execute("""
@@ -174,6 +188,18 @@ try:
 
 except mysql.connector.Error as err:
     print(f"Erro: {err}")
+
 finally:
-    cursor.close()
-    conn.close()
+    try:
+        if cursor:
+            cursor.close()
+    except:
+        pass
+
+    try:
+        if conn:
+            conn.close()
+    except:
+        pass
+
+    print("Conexão encerrada.")
