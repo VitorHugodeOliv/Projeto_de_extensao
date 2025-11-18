@@ -31,6 +31,7 @@ services:
       RUNNING_IN_DOCKER: "True"
       FLASK_APP: app
       FLASK_ENV: development
+      DEBUG: "True"
       DB_USER: root
       DB_PASSWORD: senha123
       DB_NAME: sistema_login

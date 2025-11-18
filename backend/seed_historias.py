@@ -6,6 +6,11 @@ def inserir_historias_iniciais():
     try:
         conn = mysql.connector.connect(**db_config)
         cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM Historias")
+        existentes = cursor.fetchone()[0]
+        if existentes > 0:
+            print("Histórias iniciais já foram inseridas anteriormente; nenhuma nova linha será criada.")
+            return
         historias_iniciais = [
             {
                 "titulo": "A Nossa Comédia Dell’Arte",
